@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Gewerbliche Selbstauskunft – Anja Woßlick</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f3ee;color:#1a1a1a}
+
+/* ── Header ── */
+header{background:#1a1a1a;padding:14px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.logo-circle{width:42px;height:42px;border-radius:50%;border:2px solid #C8A832;display:flex;align-items:center;justify-content:center;color:#C8A832;font-weight:900;font-size:14px;flex-shrink:0}
+.hdr-title{color:#fff;font-size:15px;font-weight:700}
+.hdr-sub{color:#C8A832;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.hdr-badge{margin-left:auto;background:#C8A832;color:#1a1a1a;font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
+
+/* ── Progress ── */
+.progress-bar{background:#fff;border-bottom:1px solid #e8e3d8;display:flex;overflow-x:auto}
+.step-tab{flex:1;min-width:90px;padding:12px 6px 10px;text-align:center;font-size:11px;font-weight:600;color:#aaa;border-bottom:3px solid transparent;cursor:default;white-space:nowrap}
+.step-tab.active{color:#C8A832;border-bottom-color:#C8A832}
+.step-tab.done{color:#4caf50;border-bottom-color:#4caf50}
+.step-num{display:block;font-size:10px;margin-bottom:2px}
+
+/* ── Layout ── */
+main{max-width:880px;margin:0 auto;padding:24px 16px 80px}
+.step{display:none}
+.step.active{display:block}
+
+/* ── Card ── */
+.card{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px;margin-bottom:20px}
+.card-title{font-size:12px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#C8A832;border-bottom:2px solid #f0e8d0;padding-bottom:8px;margin-bottom:16px}
+
+/* ── Col grid (label | A | B) ── */
+.col-grid{display:grid;grid-template-columns:210px 1fr 1fr;gap:0 14px;align-items:center;padding:7px 0;border-bottom:1px solid #f5f2ec}
+.col-grid:last-child{border-bottom:none}
+body.single .col-grid{grid-template-columns:210px 1fr}
+body.single .mitant-col{display:none!important}
+
+/* ── Sub headers ── */
+.sub-h{background:#f8f4ea;color:#9a7c2f;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 8px 6px 10px;margin:14px 0 4px;border-left:3px solid #C8A832}
+.col-label{font-size:12px;font-weight:600;color:#555;line-height:1.35}
+.col-label small{display:block;font-size:10px;font-weight:400;color:#aaa;margin-top:1px}
+.dual-header{display:grid;grid-template-columns:210px 1fr 1fr;gap:0 14px;padding:6px 0}
+body.single .dual-header{grid-template-columns:210px 1fr}
+.dual-h{font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px}
+
+/* ── Inputs ── */
+input[type=text],input[type=number],input[type=email],select,textarea{width:100%;border:1px solid #e0d8c0;border-radius:5px;padding:7px 10px;font-size:13px;background:#fafaf8;color:#1a1a1a;transition:border-color .2s;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#C8A832;background:#fff}
+textarea{resize:vertical;min-height:52px}
+
+/* ── Selection cards ── */
+.sel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 20px}
+.sel-card{border:2px solid #e0d8c0;border-radius:8px;padding:16px;cursor:pointer;text-align:center;transition:border-color .15s,background .15s}
+.sel-card:hover{border-color:#C8A832;background:#fdf8ef}
+.sel-card.selected{border-color:#C8A832;background:#fdf8ef}
+.sel-icon{font-size:26px;margin-bottom:6px}
+.sel-label{font-size:13px;font-weight:700}
+.sel-sub{font-size:11px;color:#888;margin-top:3px}
+
+/* ── Toggle buttons ── */
+.toggle-wrap{display:flex;gap:6px}
+.tog-btn{padding:5px 14px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;background:#fafaf8;transition:background .15s}
+.tog-btn.active-yes{background:#e8f5e9;border-color:#4caf50;color:#2e7d32}
+.tog-btn.active-no{background:#fff3e0;border-color:#ff9800;color:#e65100}
+.tog-btn.active-sel{background:#fdf8ef;border-color:#C8A832;color:#9a7c2f}
+
+/* ── Immobilien ── */
+.immo-item{border:1px solid #e8e3d8;border-radius:6px;margin-bottom:8px;overflow:hidden}
+.immo-toggle{width:100%;background:#fafaf5;border:none;padding:12px 16px;text-align:left;font-size:13px;font-weight:700;color:#555;cursor:pointer;display:flex;justify-content:space-between}
+.immo-toggle.open{background:#fdf8ef;color:#9a7c2f}
+.arrow{transition:transform .2s}
+.immo-toggle.open .arrow{transform:rotate(-180deg)}
+.immo-body{display:none;padding:16px;border-top:1px solid #e8e3d8}
+.immo-body.open{display:block}
+.immo-sub-h{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C8A832;margin:10px 0 6px;border-bottom:1px solid #f0e8d0;padding-bottom:4px}
+.immo-row{display:grid;grid-template-columns:210px 1fr 1fr;gap:6px 14px;align-items:center;margin-bottom:6px}
+.immo-row .col-label{font-size:12px;font-weight:600;color:#555}
+
+/* ── Tables (Vermögen / Verbindlichkeiten) ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.tbl th{background:#1a1a1a;color:#C8A832;padding:6px 8px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:left;white-space:nowrap}
+.tbl td{padding:5px 6px;border-bottom:1px solid #f0ece0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl input{border:none;border-bottom:1px solid #e0d8c0;border-radius:0;background:transparent;padding:3px 4px;font-size:12px;width:100%;font-family:inherit}
+.tbl input:focus{border-bottom-color:#C8A832;outline:none;background:#fdf8ef}
+.tbl select{border:none;border-bottom:1px solid #e0d8c0;border-radius:0;background:transparent;padding:3px 4px;font-size:12px;width:100%;font-family:inherit}
+
+/* ── Checkboxes ── */
+.cb-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f5f2ec}
+.cb-row:last-child{border-bottom:none}
+.cb-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;accent-color:#C8A832;flex-shrink:0}
+.cb-text{font-size:12px;color:#444;line-height:1.5;flex:1}
+.cb-date{width:140px;flex-shrink:0}
+
+/* ── Notice ── */
+.notice{background:#fff8e1;border:1px solid #ffe082;border-radius:6px;padding:10px 14px;font-size:12px;color:#7a5c00;margin-bottom:14px}
+
+/* ── Nav / Action ── */
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:24px}
+.btn{padding:11px 28px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-primary{background:#C8A832;color:#1a1a1a}
+.btn-primary:hover{background:#b8941e}
+.btn-primary:disabled{background:#e0d8c0;color:#aaa;cursor:not-allowed}
+.btn-secondary{background:#f0ece0;color:#555}
+.btn-secondary:hover{background:#e8e0d0}
+.action-panel{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px;text-align:center;margin-bottom:20px}
+.action-panel p{font-size:13px;color:#666;margin-bottom:16px;line-height:1.6}
+.action-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;background:#1a1a1a;color:#C8A832}
+.action-btn:hover{background:#2a2a2a}
+
+/* ── Print ── */
+@media print{
+  header,.progress-bar,.nav-buttons,.action-panel{display:none!important}
+  body{background:#fff}
+  main{padding:0;max-width:100%}
+  .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;margin-bottom:12px}
+  .step{display:block!important}
+  .immo-body{display:block!important}
+  input,select,textarea{border:none;border-bottom:1px solid #ccc;background:transparent;padding:2px 4px}
+  .tbl input,.tbl select{border-bottom:1px solid #ccc}
+  .tog-btn{border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-circle">AW</div>
+  <div>
+    <div class="hdr-title">Anja Woßlick</div>
+    <div class="hdr-sub">Finanzierungsexpertin</div>
+  </div>
+  <div class="hdr-badge">Gewerbliche Selbstauskunft</div>
+</header>
+
+<div class="progress-bar">
+  <div class="step-tab active"><span class="step-num">1</span>Vorhaben</div>
+  <div class="step-tab"><span class="step-num">2</span>Person & Unternehmen</div>
+  <div class="step-tab"><span class="step-num">3</span>Immobilien</div>
+  <div class="step-tab"><span class="step-num">4</span>Einnahmen & Ausgaben</div>
+  <div class="step-tab"><span class="step-num">5</span>Vermögen & Verbindlichkeiten</div>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHRITT 1 – VORHABEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="step active" id="step1">
+  <div class="card">
+    <div class="card-title">Finanzierungsvorhaben</div>
+    <div class="sub-h">Art des Vorhabens</div>
+    <div class="sel-grid">
+      <div class="sel-card" id="card-eigenheim" onclick="selectVorhaben('eigenheim')">
+        <div class="sel-icon">🏡</div>
+        <div class="sel-label">Eigenheim</div>
+        <div class="sel-sub">Selbstgenutztes Wohneigentum</div>
+      </div>
+      <div class="sel-card" id="card-kapital" onclick="selectVorhaben('kapitalanlage')">
+        <div class="sel-icon">🏢</div>
+        <div class="sel-label">Kapitalanlage</div>
+        <div class="sel-sub">Zur Vermietung / Investition</div>
+      </div>
+    </div>
+    <div class="sub-h">Anzahl Darlehensnehmer</div>
+    <div class="sel-grid" style="margin-top:12px;margin-bottom:0">
+      <div class="sel-card" id="card-dn1" onclick="selectDN(1)">
+        <div class="sel-icon">👤</div>
+        <div class="sel-label">1 Darlehensnehmer</div>
+      </div>
+      <div class="sel-card" id="card-dn2" onclick="selectDN(2)">
+        <div class="sel-icon">👥</div>
+        <div class="sel-label">2 Darlehensnehmer</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <span></span>
+    <button class="btn btn-primary" id="btn-s1-weiter" onclick="goStep(2)" disabled>Weiter →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHRITT 2 – PERSÖNLICHE DATEN & UNTERNEHMEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="step" id="step2">
+
+  <div class="card">
+    <div class="card-title">Persönliche Daten</div>
+    <div class="dual-header">
+      <div></div>
+      <div class="dual-h">Antragsteller / Bürge</div>
+      <div class="dual-h mitant-col">Mitantragsteller / Ehegatte</div>
+    </div>
+
+    <div class="col-grid">
+      <div class="col-label">Anrede</div>
+      <select name="a_anrede"><option value="">–</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+      <select name="b_anrede" class="mitant-col"><option value="">–</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Vorname & Name<small>ggf. Geburtsname</small></div>
+      <input type="text" name="a_name" placeholder="Vorname Nachname"/>
+      <input type="text" name="b_name" class="mitant-col" placeholder="Vorname Nachname"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Geburtsname / früherer Name</div>
+      <input type="text" name="a_geburtsname"/>
+      <input type="text" name="b_geburtsname" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Geb.-Datum & Geburtsort</div>
+      <input type="text" name="a_gebdatum" placeholder="TT.MM.JJJJ, Ort"/>
+      <input type="text" name="b_gebdatum" class="mitant-col" placeholder="TT.MM.JJJJ, Ort"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Telefon</div>
+      <input type="text" name="a_telefon"/>
+      <input type="text" name="b_telefon" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">E-Mail</div>
+      <input type="email" name="a_email"/>
+      <input type="email" name="b_email" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Straße & Hausnr.</div>
+      <input type="text" name="a_strasse"/>
+      <input type="text" name="b_strasse" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">PLZ & Ort</div>
+      <input type="text" name="a_plzort"/>
+      <input type="text" name="b_plzort" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Wohnhaft seit</div>
+      <input type="text" name="a_wohnhaft" placeholder="MM/JJJJ"/>
+      <input type="text" name="b_wohnhaft" class="mitant-col" placeholder="MM/JJJJ"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Staatsangehörigkeit</div>
+      <input type="text" name="a_nationalitaet"/>
+      <input type="text" name="b_nationalitaet" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Familienstand</div>
+      <select name="a_famstand">
+        <option value="">–</option><option>ledig</option><option>verheiratet</option>
+        <option>geschieden</option><option>verwitwet</option><option>eingetr. Lebenspartnerschaft</option>
+      </select>
+      <select name="b_famstand" class="mitant-col">
+        <option value="">–</option><option>ledig</option><option>verheiratet</option>
+        <option>geschieden</option><option>verwitwet</option><option>eingetr. Lebenspartnerschaft</option>
+      </select>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Güterstand</div>
+      <div>
+        <div class="toggle-wrap" id="gs-a-wrap">
+          <button type="button" class="tog-btn" onclick="setGS('a','Gesetzlich',this)">Gesetzlich</button>
+          <button type="button" class="tog-btn" onclick="setGS('a','Gütertrennung',this)">Gütertrennung</button>
+          <button type="button" class="tog-btn" onclick="setGS('a','Gütergemeinschaft',this)">Gütergemeinschaft</button>
+        </div>
+        <input type="hidden" name="a_gueterstand" id="a_gueterstand"/>
+      </div>
+      <div class="mitant-col">
+        <div class="toggle-wrap" id="gs-b-wrap">
+          <button type="button" class="tog-btn" onclick="setGS('b','Gesetzlich',this)">Gesetzlich</button>
+          <button type="button" class="tog-btn" onclick="setGS('b','Gütertrennung',this)">Gütertrennung</button>
+          <button type="button" class="tog-btn" onclick="setGS('b','Gütergemeinschaft',this)">Gütergemeinschaft</button>
+        </div>
+        <input type="hidden" name="b_gueterstand" id="b_gueterstand"/>
+      </div>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Kinder (Anzahl, Geburtstage)</div>
+      <input type="text" name="a_kinder" placeholder="z.B. 2 · 01.01.2015 · 05.06.2018"/>
+      <input type="text" name="b_kinder" class="mitant-col" placeholder="z.B. 1 · 12.03.2020"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Steuer-ID</div>
+      <input type="text" name="a_steuerid"/>
+      <input type="text" name="b_steuerid" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">IBAN</div>
+      <input type="text" name="a_iban"/>
+      <input type="text" name="b_iban" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">BIC / Kreditinstitut</div>
+      <input type="text" name="a_bic"/>
+      <input type="text" name="b_bic" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Anzahl KFZ im Haushalt<small>ohne Firmenfahrzeuge</small></div>
+      <input type="number" name="a_kfz_anz" placeholder="0" min="0"/>
+      <input type="number" name="b_kfz_anz" class="mitant-col" placeholder="0" min="0"/>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Angaben zum Unternehmen</div>
+    <div class="col-grid" style="grid-template-columns:210px 1fr!important">
+      <div class="col-label">Firmenname / Unternehmensname</div>
+      <input type="text" name="firma_name"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Rechtsform</div>
+      <select name="firma_rechtsform">
+        <option value="">– bitte wählen –</option>
+        <option>Einzelunternehmen / Freiberufler</option>
+        <option>GbR</option><option>OHG</option><option>KG</option>
+        <option>GmbH</option><option>GmbH & Co. KG</option>
+        <option>UG (haftungsbeschränkt)</option><option>AG</option><option>Sonstige</option>
+      </select>
+      <input type="text" name="firma_rechtsform_sonstig" placeholder="ggf. Sonstiges / Legitimation"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Nr. Handelsregister</div>
+      <input type="text" name="firma_hr_nr" placeholder="z.B. HRB 12345"/>
+      <input type="text" name="firma_hr_datum" placeholder="HR-Eintragung am (Datum)"/>
+    </div>
+    <div class="col-grid" style="grid-template-columns:210px 1fr!important">
+      <div class="col-label">Selbstständig / Gewerbetreibend seit</div>
+      <input type="text" name="firma_seit" placeholder="MM/JJJJ"/>
+    </div>
+    <div class="col-grid" style="grid-template-columns:210px 1fr!important">
+      <div class="col-label">Branche / Geschäftszweig / Beruf</div>
+      <input type="text" name="firma_branche"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Art der Tätigkeit</div>
+      <select name="a_taetigkeit">
+        <option value="">– bitte wählen –</option>
+        <option>Selbstständig</option><option>Freiberufler</option>
+        <option>Gewerbetreibender</option><option>Geschäftsführer</option>
+        <option>Gesellschafter-Geschäftsführer</option><option>Sonstige</option>
+      </select>
+      <select name="b_taetigkeit" class="mitant-col">
+        <option value="">– bitte wählen –</option>
+        <option>Selbstständig</option><option>Freiberufler</option>
+        <option>Gewerbetreibender</option><option>Angestellt</option><option>Sonstige</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goStep(1)">← Zurück</button>
+    <button class="btn btn-primary" onclick="goStep(3)">Weiter →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHRITT 3 – IMMOBILIEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="step" id="step3">
+  <div class="card">
+    <div class="card-title">Immobilienvermögen (Grundbesitz)</div>
+    <div class="notice">Bitte alle im Bestand befindlichen Objekte angeben. Klicken Sie auf eine Immobilie, um die Felder auszuklappen.</div>
+    <div id="immos"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goStep(2)">← Zurück</button>
+    <button class="btn btn-primary" onclick="goStep(4)">Weiter →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHRITT 4 – EINNAHMEN & AUSGABEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="step" id="step4">
+
+  <!-- Einnahmen -->
+  <div class="card">
+    <div class="card-title">Einnahmen (jährlich in €)</div>
+
+    <div class="sub-h">2.1 Nichtselbstständige Einkünfte</div>
+    <div class="dual-header">
+      <div></div>
+      <div class="dual-h">Antragsteller</div>
+      <div class="dual-h mitant-col">Mitantragsteller</div>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Bruttoeinkommen p.a.</div>
+      <input type="number" name="a_brutto_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_brutto_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Beschäftigt bei (Arbeitgeber)</div>
+      <input type="text" name="a_arbeitgeber"/>
+      <input type="text" name="b_arbeitgeber" class="mitant-col"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Beschäftigt seit</div>
+      <input type="text" name="a_besch_seit" placeholder="MM/JJJJ"/>
+      <input type="text" name="b_besch_seit" class="mitant-col" placeholder="MM/JJJJ"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Einkommensschwankungen<small>letzte 5 Jahre (z.B. Kurzarbeit, Elternzeit)</small></div>
+      <div>
+        <div class="toggle-wrap">
+          <button type="button" class="tog-btn" onclick="setTog('a_eschwank','Ja',this)">Ja</button>
+          <button type="button" class="tog-btn" onclick="setTog('a_eschwank','Nein',this)">Nein</button>
+        </div>
+        <input type="hidden" name="a_eschwank" id="a_eschwank"/>
+      </div>
+      <div class="mitant-col">
+        <div class="toggle-wrap">
+          <button type="button" class="tog-btn" onclick="setTog('b_eschwank','Ja',this)">Ja</button>
+          <button type="button" class="tog-btn" onclick="setTog('b_eschwank','Nein',this)">Nein</button>
+        </div>
+        <input type="hidden" name="b_eschwank" id="b_eschwank"/>
+      </div>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Erläuterung Schwankungen</div>
+      <input type="text" name="a_eschwank_text" placeholder="Grund und Höhe"/>
+      <input type="text" name="b_eschwank_text" class="mitant-col" placeholder="Grund und Höhe"/>
+    </div>
+
+    <div class="sub-h" style="margin-top:16px">2.2 Einkünfte aus Gewerbebetrieb / selbstständiger Arbeit</div>
+    <div class="col-grid">
+      <div class="col-label">Betriebsergebnis / Gewinn p.a.<small>lt. letztem Jahresabschluss / EÜR</small></div>
+      <input type="number" name="a_gewinn_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_gewinn_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Gewerbliche Zinskosten p.a.<small>Hinzurechnung</small></div>
+      <input type="number" name="a_gew_zinsen" placeholder="0,00" min="0"/>
+      <input type="number" name="b_gew_zinsen" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Abschreibungen p.a.<small>Hinzurechnung</small></div>
+      <input type="number" name="a_abschr" placeholder="0,00" min="0"/>
+      <input type="number" name="b_abschr" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Bemerkungen<small>z.B. Verweis Jahresabschluss, Stichtag</small></div>
+      <textarea name="a_gew_bemerk" placeholder="Bemerkungen Antragsteller"></textarea>
+      <textarea name="b_gew_bemerk" class="mitant-col" placeholder="Bemerkungen Mitantragsteller"></textarea>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Einkommensschwankungen<small>letzte 5 Jahre (Gewerbe)</small></div>
+      <div>
+        <div class="toggle-wrap">
+          <button type="button" class="tog-btn" onclick="setTog('a_gew_schwank','Ja',this)">Ja</button>
+          <button type="button" class="tog-btn" onclick="setTog('a_gew_schwank','Nein',this)">Nein</button>
+        </div>
+        <input type="hidden" name="a_gew_schwank" id="a_gew_schwank"/>
+      </div>
+      <div class="mitant-col">
+        <div class="toggle-wrap">
+          <button type="button" class="tog-btn" onclick="setTog('b_gew_schwank','Ja',this)">Ja</button>
+          <button type="button" class="tog-btn" onclick="setTog('b_gew_schwank','Nein',this)">Nein</button>
+        </div>
+        <input type="hidden" name="b_gew_schwank" id="b_gew_schwank"/>
+      </div>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Erläuterung</div>
+      <input type="text" name="a_gew_schwank_text" placeholder="Grund und Höhe"/>
+      <input type="text" name="b_gew_schwank_text" class="mitant-col" placeholder="Grund und Höhe"/>
+    </div>
+
+    <div class="sub-h" style="margin-top:16px">2.2 Weitere Einkunftsarten</div>
+    <div class="col-grid">
+      <div class="col-label">Kapitalvermögen / Beteiligungen p.a.<small>Zinsen, Dividenden</small></div>
+      <input type="number" name="a_kapital_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_kapital_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid" style="background:#fdf8ef;border-radius:4px;padding:8px 0">
+      <div class="col-label">Vermietung & Verpachtung p.a.<small>↻ auto aus Immobilien (Kaltmiete × 12)</small></div>
+      <input type="number" name="a_vvp_pa" placeholder="0,00" min="0" style="background:#fdf8ef;border-color:#C8A832" readonly/>
+      <input type="number" name="b_vvp_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Land- & Forstwirtschaft p.a.</div>
+      <input type="number" name="a_lfw_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_lfw_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Sonstige Einkünfte p.a.<small>Kindergeld, Unterhalt, Renten</small></div>
+      <input type="number" name="a_sonst_ein_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_sonst_ein_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Einkünfte aus (Bezeichnung)</div>
+      <input type="text" name="a_sonst_ein_art" placeholder="z.B. Kindergeld, Unterhalt"/>
+      <input type="text" name="b_sonst_ein_art" class="mitant-col"/>
+    </div>
+
+    <div class="sub-h" style="margin-top:16px">2.3 Zukünftige Einnahmen / Renten</div>
+    <div class="col-grid">
+      <div class="col-label">Voraussichtlicher Rentenbeginn</div>
+      <input type="text" name="a_rentenbeginn" placeholder="MM/JJJJ"/>
+      <input type="text" name="b_rentenbeginn" class="mitant-col" placeholder="MM/JJJJ"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Voraussichtliche Rentenhöhe p.a.</div>
+      <input type="number" name="a_rente_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_rente_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+  </div>
+
+  <!-- Ausgaben -->
+  <div class="card">
+    <div class="card-title">Private Ausgaben (jährlich in €)</div>
+    <div class="dual-header">
+      <div></div>
+      <div class="dual-h">Antragsteller</div>
+      <div class="dual-h mitant-col">Mitantragsteller</div>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Lebenshaltungskosten p.a.<small>Nahrung, Bekleidung, Gesundheit, Kommunikation</small></div>
+      <input type="number" name="a_lhk_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_lhk_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Miete (Kaltmiete) p.a.</div>
+      <input type="number" name="a_miete_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_miete_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Wohnfläche m²</div>
+      <input type="number" name="a_wohnflaeche" placeholder="m²" min="0"/>
+      <input type="number" name="b_wohnflaeche" class="mitant-col" placeholder="m²" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Wohnnebenkosten p.a.<small>auch bei Wohneigentum</small></div>
+      <input type="number" name="a_nebenk_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_nebenk_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">PKW-Kosten p.a.<small>Benzin, Steuern, Versicherung (ohne Firmenwagen)</small></div>
+      <input type="number" name="a_pkw_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_pkw_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+
+    <div class="sub-h">Vorsorge p.a.</div>
+    <div class="col-grid">
+      <div class="col-label">Private Krankenversicherung</div>
+      <input type="number" name="a_pkv_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_pkv_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Altersvorsorge</div>
+      <input type="number" name="a_altersv_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_altersv_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Pflege</div>
+      <input type="number" name="a_pflege_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_pflege_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Gesetzliche SV-Abzüge</div>
+      <input type="number" name="a_sv_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_sv_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+
+    <div class="sub-h">Versicherungen p.a.</div>
+    <div class="col-grid">
+      <div class="col-label">Lebens- / Rentenversicherung</div>
+      <input type="number" name="a_lv_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_lv_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Unfallversicherung</div>
+      <input type="number" name="a_unfall_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_unfall_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Hausrat- / Haftpflichtversicherung</div>
+      <input type="number" name="a_haftpfl_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_haftpfl_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+
+    <div class="sub-h">Sonstige Ausgaben p.a.</div>
+    <div class="col-grid">
+      <div class="col-label">Bausparbeiträge</div>
+      <input type="number" name="a_bauspar_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_bauspar_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Steuern / Abgaben p.a.<small>geschätzte Steuervorauszahlungen</small></div>
+      <input type="number" name="a_steuern_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_steuern_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Sonstige laufende Verpflichtungen<small>Unterhalt, Freizeit, Bildung usw.</small></div>
+      <input type="number" name="a_sonst_aus_pa" placeholder="0,00" min="0"/>
+      <input type="number" name="b_sonst_aus_pa" class="mitant-col" placeholder="0,00" min="0"/>
+    </div>
+    <div class="col-grid">
+      <div class="col-label">Bezeichnung sonstige Verpflichtungen</div>
+      <input type="text" name="a_sonst_aus_art" placeholder="z.B. Unterhalt, Sportverein"/>
+      <input type="text" name="b_sonst_aus_art" class="mitant-col"/>
+    </div>
+    <div class="col-grid" style="background:#fdf8ef;border-radius:4px;padding:8px 0">
+      <div class="col-label">Kreditraten p.a.<br><small>↻ auto aus Verbindlichkeiten (mtl. × 12)</small></div>
+      <input type="number" name="a_kredit_sum" id="a_kredit_sum" placeholder="0,00" min="0" style="background:#fdf8ef;border-color:#C8A832" readonly/>
+      <span class="mitant-col"></span>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goStep(3)">← Zurück</button>
+    <button class="btn btn-primary" onclick="goStep(5)">Weiter →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCHRITT 5 – VERMÖGEN & VERBINDLICHKEITEN
+     ═══════════════════════════════════════════════════════════ -->
+<div class="step" id="step5">
+
+  <!-- Guthaben / Wertpapierdepots -->
+  <div class="card">
+    <div class="card-title">Vermögenswerte</div>
+
+    <div class="sub-h">Guthaben / Wertpapierdepots</div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:40%">Sparkasse / Kreditinstitut / Bausparkasse</th>
+          <th style="width:25%">Konto-/Depot-Nr.</th>
+          <th style="width:35%">Guthaben / Kurswert ca. €</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="gut1_inst"/></td><td><input type="text" name="gut1_nr"/></td><td><input type="number" name="gut1_betrag" min="0"/></td></tr>
+        <tr><td><input type="text" name="gut2_inst"/></td><td><input type="text" name="gut2_nr"/></td><td><input type="number" name="gut2_betrag" min="0"/></td></tr>
+        <tr><td><input type="text" name="gut3_inst"/></td><td><input type="text" name="gut3_nr"/></td><td><input type="number" name="gut3_betrag" min="0"/></td></tr>
+        <tr><td><input type="text" name="gut4_inst"/></td><td><input type="text" name="gut4_nr"/></td><td><input type="number" name="gut4_betrag" min="0"/></td></tr>
+        <tr><td><input type="text" name="gut5_inst"/></td><td><input type="text" name="gut5_nr"/></td><td><input type="number" name="gut5_betrag" min="0"/></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-h" style="margin-top:16px">Lebens- / Rentenversicherungen</div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:30%">Versicherungsgesellschaft</th>
+          <th style="width:20%">Vertrags-Nr.</th>
+          <th style="width:25%">Versicherungssumme €</th>
+          <th style="width:25%">Rückkaufswert ca. €</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="lv1_ges"/></td><td><input type="text" name="lv1_nr"/></td><td><input type="number" name="lv1_vs" min="0"/></td><td><input type="number" name="lv1_rk" min="0"/></td></tr>
+        <tr><td><input type="text" name="lv2_ges"/></td><td><input type="text" name="lv2_nr"/></td><td><input type="number" name="lv2_vs" min="0"/></td><td><input type="number" name="lv2_rk" min="0"/></td></tr>
+        <tr><td><input type="text" name="lv3_ges"/></td><td><input type="text" name="lv3_nr"/></td><td><input type="number" name="lv3_vs" min="0"/></td><td><input type="number" name="lv3_rk" min="0"/></td></tr>
+        <tr><td><input type="text" name="lv4_ges"/></td><td><input type="text" name="lv4_nr"/></td><td><input type="number" name="lv4_vs" min="0"/></td><td><input type="number" name="lv4_rk" min="0"/></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-h" style="margin-top:16px">Betriebsvermögen <small style="font-size:10px;color:#aaa;text-transform:none;letter-spacing:0">(bei Gewinnermittlung nach §4 EStG Abs. 3)</small></div>
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:70%">Beschreibung</th><th style="width:30%">Zeitwert ca. €</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="bv1_beschr"/></td><td><input type="number" name="bv1_wert" min="0"/></td></tr>
+        <tr><td><input type="text" name="bv2_beschr"/></td><td><input type="number" name="bv2_wert" min="0"/></td></tr>
+        <tr><td><input type="text" name="bv3_beschr"/></td><td><input type="number" name="bv3_wert" min="0"/></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-h" style="margin-top:16px">Sonstige Vermögensgegenstände <small style="font-size:10px;color:#aaa;text-transform:none;letter-spacing:0">(Kunst, Beteiligungen, KFZ, immaterielles Vermögen)</small></div>
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:70%">Art des Vermögens</th><th style="width:30%">Zeitwert ca. €</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="sv1_art"/></td><td><input type="number" name="sv1_wert" min="0"/></td></tr>
+        <tr><td><input type="text" name="sv2_art"/></td><td><input type="number" name="sv2_wert" min="0"/></td></tr>
+        <tr><td><input type="text" name="sv3_art"/></td><td><input type="number" name="sv3_wert" min="0"/></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Private Verbindlichkeiten -->
+  <div class="card">
+    <div class="card-title">Private Verbindlichkeiten</div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Gläubiger</th>
+          <th>Zins + Tilgung mtl. €</th>
+          <th>Vertragsbeginn</th>
+          <th>Restschuld €</th>
+          <th>Zinssatz %</th>
+          <th>Abl. Zinsbindung</th>
+          <th>Ende Laufzeit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="pv1_gl"/></td><td><input type="number" name="pv1_rate" min="0"/></td><td><input type="text" name="pv1_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="pv1_rest" min="0"/></td><td><input type="number" name="pv1_zins" min="0" step="0.01"/></td><td><input type="text" name="pv1_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="pv1_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="pv2_gl"/></td><td><input type="number" name="pv2_rate" min="0"/></td><td><input type="text" name="pv2_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="pv2_rest" min="0"/></td><td><input type="number" name="pv2_zins" min="0" step="0.01"/></td><td><input type="text" name="pv2_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="pv2_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="pv3_gl"/></td><td><input type="number" name="pv3_rate" min="0"/></td><td><input type="text" name="pv3_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="pv3_rest" min="0"/></td><td><input type="number" name="pv3_zins" min="0" step="0.01"/></td><td><input type="text" name="pv3_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="pv3_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="pv4_gl"/></td><td><input type="number" name="pv4_rate" min="0"/></td><td><input type="text" name="pv4_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="pv4_rest" min="0"/></td><td><input type="number" name="pv4_zins" min="0" step="0.01"/></td><td><input type="text" name="pv4_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="pv4_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="pv5_gl"/></td><td><input type="number" name="pv5_rate" min="0"/></td><td><input type="text" name="pv5_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="pv5_rest" min="0"/></td><td><input type="number" name="pv5_zins" min="0" step="0.01"/></td><td><input type="text" name="pv5_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="pv5_ende" placeholder="MM/JJJJ"/></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Gewerbliche Verbindlichkeiten -->
+  <div class="card">
+    <div class="card-title">Gewerbliche Verbindlichkeiten / sonstige Verpflichtungen</div>
+
+    <div class="sub-h">Bürgschaftsverpflichtungen</div>
+    <div class="col-grid" style="grid-template-columns:210px 1fr 1fr!important">
+      <div class="col-label">Bürgschaftsbetrag €</div>
+      <input type="number" name="buerg_betrag" placeholder="0,00" min="0"/>
+      <input type="text" name="buerg_haupt" placeholder="Hauptschuldner"/>
+    </div>
+
+    <div class="sub-h" style="margin-top:14px">Gewerbliche Darlehen / Kreditverpflichtungen <small style="font-size:10px;color:#aaa;text-transform:none;letter-spacing:0">(wenn nicht aus Bilanz ersichtlich)</small></div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Gläubiger</th>
+          <th>Zins + Tilgung p.a. €</th>
+          <th>Vertragsbeginn</th>
+          <th>Restschuld €</th>
+          <th>Zinssatz %</th>
+          <th>Abl. Zinsbindung</th>
+          <th>Ende Laufzeit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" name="gv1_gl"/></td><td><input type="number" name="gv1_rate" min="0"/></td><td><input type="text" name="gv1_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv1_rest" min="0"/></td><td><input type="number" name="gv1_zins" min="0" step="0.01"/></td><td><input type="text" name="gv1_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv1_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="gv2_gl"/></td><td><input type="number" name="gv2_rate" min="0"/></td><td><input type="text" name="gv2_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv2_rest" min="0"/></td><td><input type="number" name="gv2_zins" min="0" step="0.01"/></td><td><input type="text" name="gv2_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv2_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="gv3_gl"/></td><td><input type="number" name="gv3_rate" min="0"/></td><td><input type="text" name="gv3_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv3_rest" min="0"/></td><td><input type="number" name="gv3_zins" min="0" step="0.01"/></td><td><input type="text" name="gv3_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv3_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="gv4_gl"/></td><td><input type="number" name="gv4_rate" min="0"/></td><td><input type="text" name="gv4_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv4_rest" min="0"/></td><td><input type="number" name="gv4_zins" min="0" step="0.01"/></td><td><input type="text" name="gv4_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv4_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="gv5_gl"/></td><td><input type="number" name="gv5_rate" min="0"/></td><td><input type="text" name="gv5_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv5_rest" min="0"/></td><td><input type="number" name="gv5_zins" min="0" step="0.01"/></td><td><input type="text" name="gv5_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv5_ende" placeholder="MM/JJJJ"/></td></tr>
+        <tr><td><input type="text" name="gv6_gl"/></td><td><input type="number" name="gv6_rate" min="0"/></td><td><input type="text" name="gv6_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gv6_rest" min="0"/></td><td><input type="number" name="gv6_zins" min="0" step="0.01"/></td><td><input type="text" name="gv6_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gv6_ende" placeholder="MM/JJJJ"/></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Erklärungen -->
+  <div class="card">
+    <div class="card-title">Erklärungen zu Rechts- und Insolvenzverfahren</div>
+    <div class="notice">Bitte zutreffende Aussagen ankreuzen und ggf. Datum des Verfahrens angeben.</div>
+    <div class="cb-row">
+      <input type="checkbox" name="cb_klage" id="cb_klage"/>
+      <label class="cb-text" for="cb_klage">Es schwebt oder schwebte ein Klage- oder Mahnverfahren / Es hat ein Restrukturierungs- oder Insolvenzverfahren bzw. ein außergerichtlicher Vergleich stattgefunden oder findet derzeit statt.</label>
+      <input type="text" name="cb_klage_datum" placeholder="Datum des Verfahrens" class="cb-date" style="font-size:12px;padding:5px 8px"/>
+    </div>
+    <div class="cb-row">
+      <input type="checkbox" name="cb_eid_antrag" id="cb_eid_antrag"/>
+      <label class="cb-text" for="cb_eid_antrag">Es ist ein Antrag auf Einleitung des Verfahrens zur Abgabe der eidesstattlichen Versicherung / Vermögensauskunft gestellt worden.</label>
+    </div>
+    <div class="cb-row">
+      <input type="checkbox" name="cb_eid_geleistet" id="cb_eid_geleistet"/>
+      <label class="cb-text" for="cb_eid_geleistet">Es ist das Verfahren zur Abgabe der eidesstattlichen Versicherung / Vermögensauskunft bereits durchgeführt worden / der Offenbarungseid wurde bereits geleistet.</label>
+    </div>
+  </div>
+
+  <!-- Aktion -->
+  <div class="action-panel">
+    <p>
+      Bitte alle Angaben prüfen und das Formular drucken oder als PDF speichern.<br/>
+      Weiterleitung an: <strong>awosslick@elbfinanz-dresden.de</strong>
+    </p>
+    <button class="action-btn" onclick="window.print()">
+      <span>🖨</span>
+      <span>Drucken / Als PDF speichern</span>
+    </button>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" onclick="goStep(4)">← Zurück</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+  let finanzierungstyp    = null;
+  let darlehensnehmerzahl = null;
+
+  function checkWeiter() {
+    document.getElementById('btn-s1-weiter').disabled = !(finanzierungstyp && darlehensnehmerzahl);
+  }
+
+  function selectVorhaben(typ) {
+    finanzierungstyp = typ;
+    document.getElementById('card-eigenheim').classList.toggle('selected', typ === 'eigenheim');
+    document.getElementById('card-kapital').classList.toggle('selected', typ === 'kapitalanlage');
+    checkWeiter();
+  }
+
+  function selectDN(n) {
+    darlehensnehmerzahl = n;
+    document.getElementById('card-dn1').classList.toggle('selected', n === 1);
+    document.getElementById('card-dn2').classList.toggle('selected', n === 2);
+    document.body.classList.toggle('single', n === 1);
+    checkWeiter();
+  }
+
+  function setGS(person, val, btn) {
+    document.getElementById(person + '_gueterstand').value = val;
+    document.getElementById('gs-' + person + '-wrap').querySelectorAll('.tog-btn')
+      .forEach(b => b.classList.remove('active-sel'));
+    btn.classList.add('active-sel');
+  }
+
+  function setTog(id, val, btn) {
+    document.getElementById(id).value = val;
+    btn.closest('.toggle-wrap').querySelectorAll('.tog-btn')
+      .forEach(b => b.classList.remove('active-yes','active-no'));
+    btn.classList.add(val === 'Ja' ? 'active-yes' : 'active-no');
+  }
+
+  // ── Navigation ──
+  let currentStep = 1;
+  function goStep(n) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.querySelectorAll('.step-tab')[currentStep - 1].classList.remove('active');
+    if (currentStep < n) {
+      document.querySelectorAll('.step-tab')[currentStep - 1].classList.add('done');
+      document.querySelectorAll('.step-tab')[currentStep - 1].querySelector('.step-num').textContent = '✓';
+    }
+    currentStep = n;
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.querySelectorAll('.step-tab')[currentStep - 1].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Immobilien Accordion ──
+  const immoContainer = document.getElementById('immos');
+  for (let i = 1; i <= 6; i++) {
+    immoContainer.innerHTML += `
+      <div class="immo-item">
+        <button class="immo-toggle" onclick="toggleImmo(this,${i})">
+          <span>Immobilie ${i}</span><span class="arrow">▾</span>
+        </button>
+        <div class="immo-body" id="immo${i}">
+          <div class="immo-sub-h">Objektdaten</div>
+          <div class="immo-row">
+            <div class="col-label">Immobilientyp</div>
+            <select name="i${i}_typ">
+              <option value="">– bitte wählen –</option>
+              <option>EFH (Einfamilienhaus)</option>
+              <option>ETW (Eigentumswohnung)</option>
+              <option>MFH (Mehrfamilienhaus)</option>
+              <option>Gewerbeimmobilie</option>
+              <option>Sonstiges</option>
+            </select>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Art des Objekts / Anschrift</div>
+            <input type="text" name="i${i}_adr" id="i${i}_adr" placeholder="Straße, PLZ Ort" style="grid-column:2/4"/>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Baujahr / Vollsanierung</div>
+            <input type="text" name="i${i}_baujahr" placeholder="Baujahr (JJJJ)"/>
+            <input type="text" name="i${i}_sanierung" placeholder="Vollsanierung (JJJJ)"/>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Kaufzeitpunkt</div>
+            <input type="text" name="i${i}_kauf" placeholder="MM/JJJJ"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Wert der Immobilie in €</div>
+            <input type="number" name="i${i}_wert" placeholder="0,00" min="0"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Nutz- / Wohnfläche m²</div>
+            <input type="number" name="i${i}_flaeche" placeholder="gesamt m²" min="0"/>
+            <input type="number" name="i${i}_eigennutzung" placeholder="davon Eigennutzung m²" min="0"/>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Mtl. Kaltmiete in €</div>
+            <input type="number" name="i${i}_miete" placeholder="0,00" min="0"/>
+            <input type="number" name="i${i}_nkm_pa" placeholder="Nettokaltmiete p.a. (TEUR)" min="0" step="0.001"/>
+          </div>
+          <div class="immo-sub-h" style="margin-top:8px">Belastungen / Darlehen zur Immobilie ${i}</div>
+          <div class="immo-row">
+            <div class="col-label">Belastungen (Grundbuch)</div>
+            <input type="text" name="i${i}_belast" placeholder="z.B. Grundschuld, Nießbrauch" style="grid-column:2/4"/>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Grundschuld lt. Grundbuch €</div>
+            <input type="number" name="i${i}_grundschuld" placeholder="€" min="0"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Mtl. Bankrate in €</div>
+            <input type="number" name="i${i}_bankrate" placeholder="0,00" min="0"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Aktuelle Restschuld €</div>
+            <input type="number" name="i${i}_restschuld" placeholder="€" min="0"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Zinssatz %</div>
+            <input type="number" name="i${i}_zinssatz" placeholder="%" min="0" step="0.01"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Zinsbindung bis</div>
+            <input type="text" name="i${i}_zinsbind" placeholder="MM/JJJJ"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Laufzeitende</div>
+            <input type="text" name="i${i}_laufzeit" placeholder="MM/JJJJ"/>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Kreditinstitut</div>
+            <input type="text" name="i${i}_kreditinst" style="grid-column:2/4"/>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function toggleImmo(btn, i) {
+    btn.classList.toggle('open');
+    document.getElementById('immo' + i).classList.toggle('open');
+  }
+
+  // ── Auto-Slash für Datumseingaben (MM/JJJJ) ──
+  document.addEventListener('input', function(e) {
+    if (e.target.tagName === 'INPUT' && (e.target.placeholder || '').includes('MM/JJJJ')) {
+      let raw = e.target.value.replace(/\D/g, '');
+      if (raw.length > 2) raw = raw.slice(0,2) + '/' + raw.slice(2,6);
+      else if (raw.length === 2 && !e.target.value.endsWith('/')) raw = raw + '/';
+      if (e.target.value !== raw) e.target.value = raw;
+    }
+  });
+
+  // ── Auto-Summe: Vermietung p.a. (Kaltmiete aller Immobilien × 12) ──
+  function updateVermietungSum() {
+    let sum = 0;
+    for (let i = 1; i <= 6; i++) {
+      const el = document.querySelector('[name="i' + i + '_miete"]');
+      if (el) sum += parseFloat(el.value) || 0;
+    }
+    const el = document.querySelector('[name="a_vvp_pa"]');
+    if (el) el.value = sum > 0 ? (sum * 12).toFixed(2) : '';
+  }
+
+  // ── Auto-Summe: Private Kreditraten p.a. (mtl. × 12) ──
+  function updateKreditratenSum() {
+    let sum = 0;
+    for (let i = 1; i <= 5; i++) {
+      const el = document.querySelector('[name="pv' + i + '_rate"]');
+      if (el) sum += parseFloat(el.value) || 0;
+    }
+    const el = document.getElementById('a_kredit_sum');
+    if (el) el.value = sum > 0 ? (sum * 12).toFixed(2) : '';
+  }
+
+  // Event-Delegation
+  document.addEventListener('input', function(e) {
+    const n = e.target.name || '';
+    if (/^i\d+_miete$/.test(n)) updateVermietungSum();
+    if (/^pv\d+_rate$/.test(n)) updateKreditratenSum();
+  });
+</script>
+</body>
+</html>
