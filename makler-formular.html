@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selbstauskunft Makler-Formular | Anja Woßlick</title>
+
+  <style>
+    :root {
+      --gold: #B8962A;
+      --gold-mid: #D4AF37;
+      --gold-light: #E8C040;
+      --dark: #111111;
+      --mid: #1d1d1d;
+      --light-bg: #ECEADF;
+      --border: #ddd;
+      --text: #333;
+      --blue-auto: #1a5276;
+      --blue-auto-bg: #e8f4fd;
+      --blue-auto-border: #90c0e0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--light-bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    header { background: var(--dark); padding: 18px 32px; display: flex; align-items: center; gap: 20px; border-bottom: 3px solid transparent; border-image: linear-gradient(90deg,#6a4e0a,#D4AF37,#F5E060,#D4AF37,#6a4e0a) 1; }
+    .logo-box { display: flex; align-items: center; gap: 10px; }
+    .logo-circle { width: 52px; height: 52px; background: linear-gradient(135deg,#8a6c12,#D4AF37,#F0D060,#D4AF37,#8a6c12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: var(--dark); flex-shrink: 0; }
+    .logo-text strong { font-size: 20px; letter-spacing: 1px; color: var(--gold); display: block; }
+    .logo-text span { font-size: 11px; color: #bbb; letter-spacing: 1px; text-transform: uppercase; }
+    header h1 { color: #fff; font-size: 18px; font-weight: 400; margin-left: auto; text-align: right; }
+    header h1 strong { display: block; font-size: 22px; color: var(--gold); }
+    .makler-badge { background: var(--gold); color: var(--dark); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; margin-left: 16px; align-self: center; white-space: nowrap; }
+
+    /* ── Progress ── */
+    .progress-wrap { background: var(--mid); padding: 0 32px; }
+    .progress-steps { display: flex; max-width: 960px; margin: 0 auto; }
+    .step-tab { flex: 1; padding: 12px 6px; text-align: center; font-size: 11px; color: #888; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; user-select: none; line-height: 1.4; }
+    .step-tab.active { color: var(--gold-mid); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg,#8a6c12,#D4AF37,#F5E060,#D4AF37,#8a6c12) 1; font-weight: 600; }
+    .step-tab.done { color: #aaa; }
+    .step-tab .step-num { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: #555; color: #fff; font-size: 11px; align-items: center; justify-content: center; margin-bottom: 3px; }
+    .step-tab.active .step-num { background: linear-gradient(135deg,#a07820,#D4AF37,#F0D060,#D4AF37,#a07820); color: #111; }
+    .step-tab.done .step-num { background: #2e7d32; }
+
+    /* ── Main ── */
+    main { max-width: 960px; margin: 32px auto; padding: 0 20px 60px; }
+    .section-card { background: #fff; border-radius: 2px; border: 1px solid #e2ddd0; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 14px rgba(0,0,0,0.055); }
+    .section-header { background: #111111; padding: 11px 20px; font-weight: 700; font-size: 10.5px; color: var(--gold-mid); text-transform: uppercase; letter-spacing: 2px; border-left: 4px solid var(--gold-mid); }
+
+    /* ── Vorhaben ── */
+        /* ── Vorhaben-Kacheln – elegant ── */
+    .vorhaben-wrap { counter-reset: vorhaben; display: flex; gap: 20px; justify-content: center; padding: 36px 28px 28px; }
+    .vorhaben-card {
+      counter-increment: vorhaben;
+      flex: 1; max-width: 300px;
+      background: #fff;
+      border: 1px solid #e2ddd0;
+      border-top: 3px solid #cfc6a0;
+      border-radius: 2px;
+      padding: 30px 24px 26px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow .25s ease, border-top-color .25s ease, transform .25s ease;
+      position: relative;
+    }
+    .vorhaben-card::before {
+      content: "0" counter(vorhaben);
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--gold-mid);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .vorhaben-card:hover { border-top-color: var(--gold-mid); box-shadow: 0 8px 28px rgba(0,0,0,0.11); transform: translateY(-3px); }
+    .vorhaben-card.selected {
+      border: 1px solid var(--gold-mid); border-top: 3px solid var(--gold-mid);
+      background: #fdfbf4;
+      box-shadow: 0 8px 32px rgba(180,145,30,0.18), 0 0 0 1px rgba(212,175,55,0.25);
+    }
+    .vorhaben-icon { display: none; }
+    .vorhaben-title { font-size: 17px; font-weight: 700; color: #111; margin-bottom: 10px; letter-spacing: 0.1px; }
+    .vorhaben-desc { font-size: 12px; color: #aaa; line-height: 1.75; }
+    .vorhaben-badge {
+      display: inline-block; margin-top: 20px;
+      background: transparent; border: 1px solid var(--gold-mid);
+      color: var(--gold-mid); font-size: 10px; font-weight: 700;
+      padding: 4px 14px; letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0; transition: opacity .25s;
+    }
+    .vorhaben-card.selected .vorhaben-badge { opacity: 1; }
+
+        /* ── Option-Kacheln – elegant ── */
+    .option-wrap { display: flex; gap: 14px; justify-content: center; padding: 18px 24px 26px; }
+    .option-card {
+      flex: 1; max-width: 220px;
+      background: #fff;
+      border: 1px solid #e2ddd0;
+      border-top: 3px solid #cfc6a0;
+      border-radius: 2px;
+      padding: 22px 18px 18px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow .2s ease, border-top-color .2s ease, transform .2s ease;
+    }
+    .option-card:hover { border-top-color: var(--gold-mid); box-shadow: 0 5px 20px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .option-card.selected {
+      border: 1px solid var(--gold-mid); border-top: 3px solid var(--gold-mid);
+      background: #fdfbf4;
+      box-shadow: 0 5px 20px rgba(180,145,30,0.15), 0 0 0 1px rgba(212,175,55,0.2);
+    }
+    .option-icon { display: none; }
+    .option-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .option-desc { font-size: 11px; color: #aaa; line-height: 1.55; }
+    .option-badge {
+      display: inline-block; margin-top: 14px;
+      background: transparent; border: 1px solid var(--gold-mid);
+      color: var(--gold-mid); font-size: 10px; font-weight: 700;
+      padding: 3px 12px; letter-spacing: 1.5px; text-transform: uppercase;
+      opacity: 0; transition: opacity .2s;
+    }
+    .option-card.selected .option-badge { opacity: 1; }
+    .gewerbe-notice { margin: 0 24px 24px; background: #fdfaf0; border: 1px solid var(--gold-mid); border-radius: 2px; padding: 20px 24px; font-size: 13px; color: #7a6000; display: none; }
+    .gewerbe-notice strong { display: block; margin-bottom: 6px; font-size: 15px; }
+
+    /* ── Grids ── */
+    .col-grid { display: grid; grid-template-columns: 200px 1fr 1fr; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 8px 20px; gap: 12px; }
+    .col-grid:last-child { border-bottom: none; }
+    .col-header-row { display: grid; grid-template-columns: 200px 1fr 1fr; background: #fafafa; padding: 8px 20px; gap: 12px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+    body.single .col-grid { grid-template-columns: 200px 1fr; }
+    body.single .col-header-row { grid-template-columns: 200px 1fr; }
+    body.single .col-grid > *:nth-child(3), body.single .col-header-row > *:nth-child(3) { display: none; }
+    .col-label { font-size: 13px; color: #555; font-weight: 500; }
+    .col-grid input, .col-grid select { width: 100%; padding: 7px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #fafafa; }
+    .col-grid input:focus, .col-grid select:focus { outline: none; border-color: var(--gold); background: #fff; }
+    .col-grid.sum-row { background: #fffbe6; font-weight: 700; }
+    .col-grid.sum-row input { background: #fffbe6; font-weight: 700; color: #333; border-color: var(--gold); }
+    .col-grid.auto-row { background: #f0f8ff; }
+    .auto-hint { font-size: 11px; color: #5d8aa8; font-style: italic; margin-top: 2px; }
+    .col-grid.kapital-row { background: #f5f0ff; }
+    .kapital-badge { font-size: 11px; background: #7c5cbf; color: #fff; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+
+    /* ── Öffentlicher Dienst Toggle ── */
+    .od-toggle { display: flex; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
+    .od-btn { flex: 1; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #f5f5f5; color: #888; transition: all 0.2s; text-align: center; user-select: none; }
+    .od-btn:first-child { border-right: 1px solid #ddd; }
+    .od-btn.active-yes { background: #2e7d32; color: #fff; }
+    .od-btn.active-no  { background: #555; color: #fff; }
+
+    /* ── Radio ── */
+    .radio-group { display: flex; gap: 16px; }
+    .radio-group label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; }
+
+    /* ── Verbindlichkeiten ── */
+    .verbind-grid { display: grid; grid-template-columns: 140px 1fr 1fr 1fr 1fr; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 8px 20px; gap: 10px; }
+    .verbind-grid:last-child { border-bottom: none; }
+    .verbind-header { display: grid; grid-template-columns: 140px 1fr 1fr 1fr 1fr; background: #fafafa; padding: 7px 20px; gap: 10px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; }
+    .verbind-grid input { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; background: #fafafa; }
+    .verbind-grid input:focus { outline: none; border-color: var(--gold); background: #fff; }
+
+    /* ── Immobilien ── */
+    .immo-item { border: 1px solid #e8e0c8; border-radius: 6px; margin: 12px 20px; overflow: hidden; }
+    .immo-toggle { background: #fafaf5; padding: 10px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13px; border: none; width: 100%; text-align: left; }
+    .immo-toggle:hover { background: #f5f0e0; }
+    .immo-toggle .arrow { transition: transform 0.2s; }
+    .immo-toggle.open .arrow { transform: rotate(180deg); }
+    .immo-body { display: none; padding: 12px 0; }
+    .immo-body.open { display: block; }
+    .immo-row { display: grid; grid-template-columns: 180px 1fr 1fr; align-items: center; border-bottom: 1px solid #f5f0e0; padding: 6px 16px; gap: 12px; }
+    .immo-row:last-child { border-bottom: none; }
+    .immo-row input, .immo-row select { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; background: #fafafa; }
+    .immo-row input:focus, .immo-row select:focus { outline: none; border-color: var(--gold); }
+    .immo-sub-header { padding: 6px 16px 2px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999; letter-spacing: 0.5px; border-bottom: 1px solid #f0ebe0; }
+
+    /* ── Navigation ── */
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 28px; gap: 12px; }
+    .btn { padding: 12px 32px; border: none; border-radius: 5px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(105deg,#8a6c12 0%,#C9A22A 35%,#E8C040 50%,#C9A22A 65%,#8a6c12 100%); background-size: 200% auto; color: #111; transition: background-position .5s ease, opacity .2s; }
+    .btn-primary:hover { background-position: right center; }
+    .btn-primary:disabled { background: #ccc; color: #999; cursor: not-allowed; }
+    .btn-secondary { background: #eee; color: #555; }
+    .btn-secondary:hover { background: #ddd; }
+    .btn-email { background: var(--dark); color: #fff; }
+    .btn-email:hover { background: #333; }
+
+    /* ── Abschluss-Panel ── */
+    .action-panel { background: #fff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+    .action-panel-header { background: var(--dark); padding: 20px 28px; }
+    .action-panel-header h2 { color: var(--gold); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .action-panel-header p { color: #aaa; font-size: 13px; }
+    .action-panel-body { padding: 28px; }
+    .action-info { background: #fafaf5; border: 1px solid #e8e0c8; border-left: 4px solid var(--gold); border-radius: 4px; padding: 14px 18px; margin-bottom: 24px; font-size: 13px; color: #555; line-height: 1.8; }
+    .action-info strong { color: var(--dark); }
+    .action-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .action-btn { flex: 1; min-width: 200px; padding: 18px 24px; border: none; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .action-btn-print { background: #f0f0f0; color: var(--dark); border: 2px solid #ccc; }
+    .action-btn-print:hover { background: #e0e0e0; border-color: #aaa; }
+    .action-btn-email { background: var(--dark); color: #fff; border: 2px solid var(--dark); }
+    .action-btn-email:hover { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+    .action-btn-icon { font-size: 22px; }
+
+    /* ── Misc ── */
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+    .section-note { font-size: 12px; color: #aaa; padding: 8px 20px 0; font-style: italic; }
+
+
+    /* ── Gewerblich / Privat Toggle ── */
+    .privat-block { display: block; }
+    .gewerbe-block { display: none; }
+    body.gewerbe .privat-block { display: none; }
+    body.gewerbe .gewerbe-block { display: block; }
+
+    /* ── Gewerblich-Stile ── */
+    .sub-h { background: #f8f4ea; color: #9a7c2f; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 8px 6px 10px; margin: 14px 0 4px; border-left: 3px solid var(--gold); }
+    .gew-dual-header { display: grid; grid-template-columns: 210px 1fr 1fr; gap: 0 14px; padding: 6px 0 2px; }
+    body.single .gew-dual-header { grid-template-columns: 210px 1fr; }
+    .gew-h { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    .tbl th { background: #1a1a1a; color: var(--gold); padding: 6px 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-align: left; white-space: nowrap; }
+    .tbl td { padding: 5px 6px; border-bottom: 1px solid #f0ece0; vertical-align: middle; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl input, .tbl select { border: none; border-bottom: 1px solid #e0d8c0; border-radius: 0; background: transparent; padding: 3px 4px; font-size: 12px; width: 100%; font-family: inherit; }
+    .tbl input:focus, .tbl select:focus { border-bottom-color: var(--gold); outline: none; background: #fdf8ef; }
+    .toggle-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tog-btn { padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fafaf8; transition: background .15s; }
+    .tog-btn.active-yes { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .tog-btn.active-no  { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+    .tog-btn.active-sel { background: #fdf8ef; border-color: var(--gold); color: #9a7c2f; }
+    .cb-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f5f2ec; }
+    .cb-row:last-child { border-bottom: none; }
+    .cb-row input[type=checkbox] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--gold); flex-shrink: 0; }
+    .cb-text { font-size: 12px; color: #444; line-height: 1.5; flex: 1; }
+    .cb-date { width: 140px; flex-shrink: 0; }
+    .notice-box { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #7a5c00; margin-bottom: 14px; }
+    .gew-col-grid { display: grid; grid-template-columns: 210px 1fr 1fr; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 8px 20px; gap: 12px; }
+    body.single .gew-col-grid { grid-template-columns: 210px 1fr; }
+    body.single .gew-col-grid .mitant-col { display: none !important; }
+    .gew-col-grid:last-child { border-bottom: none; }
+    .gew-col-grid input, .gew-col-grid select, .gew-col-grid textarea { width: 100%; padding: 7px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #fafafa; font-family: inherit; }
+    .gew-col-grid input:focus, .gew-col-grid select:focus { outline: none; border-color: var(--gold); background: #fff; }
+    textarea { resize: vertical; min-height: 52px; }
+
+    /* Auto-berechnete Felder */
+    .sum-field { background: #fdf8ef !important; border-color: #C8A832 !important; }
+
+    /* ── Datenschutz ── */
+    .ds-card { margin-top: 20px; }
+    .ds-check-wrap { padding: 20px 24px; display: flex; align-items: flex-start; gap: 14px; }
+    .ds-check-wrap input[type=checkbox] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--gold-mid); flex-shrink: 0; cursor: pointer; }
+    .ds-text { font-size: 13px; color: #333; line-height: 1.7; cursor: pointer; }
+    .ds-text strong { color: #111; }
+    .ds-link { color: var(--gold-mid); font-weight: 700; text-decoration: underline; cursor: pointer; border: none; background: none; padding: 0; font-size: inherit; font-family: inherit; }
+    .ds-link:hover { color: var(--gold); }
+    /* Print: Datenschutz immer sichtbar */
+    .ds-print-box { border-top: 1px solid #e2ddd0; padding: 16px 24px; font-size: 11px; color: #666; display: none; }
+    @media print { .ds-print-box { display: block; } }
+    /* ── Datenschutz-Modal ── */
+    #ds-modal { border: none; border-radius: 8px; padding: 0; max-width: 700px; width: 90vw; max-height: 80vh; box-shadow: 0 8px 40px rgba(0,0,0,.25); }
+    #ds-modal::backdrop { background: rgba(0,0,0,.45); }
+    .ds-modal-head { background: var(--gold-light); border-bottom: 2px solid var(--gold-mid); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .ds-modal-head h3 { margin: 0; font-size: 16px; color: #333; }
+    .ds-modal-close { border: none; background: none; font-size: 22px; cursor: pointer; color: #888; line-height: 1; padding: 0; }
+    .ds-modal-close:hover { color: #333; }
+    .ds-modal-body { padding: 24px; overflow-y: auto; max-height: calc(80vh - 80px); font-size: 13px; line-height: 1.8; color: #333; }
+    .ds-modal-body h4 { font-size: 13px; font-weight: 700; color: #9a7c2f; margin: 18px 0 6px; }
+    @media print { #ds-modal { display: none !important; } }
+
+    /* Dokument-Liste */
+    .dok-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #fafaf5; border: 1px solid #e8e0c8; border-radius: 4px; margin-bottom: 6px; font-size: 13px; }
+    .dok-item-icon { font-size: 18px; flex-shrink: 0; }
+    .dok-item-name { flex: 1; font-weight: 600; color: #333; word-break: break-all; }
+    .dok-item-size { font-size: 11px; color: #aaa; flex-shrink: 0; }
+    .dok-item-remove { background: none; border: none; cursor: pointer; color: #c00; font-size: 16px; padding: 0 4px; flex-shrink: 0; line-height: 1; }
+    .dok-item-remove:hover { color: #800; }
+    @media print {
+      #dok-upload-wrap { display: block !important; }
+      #dok-dropzone { display: none !important; }
+      .dok-item-remove { display: none !important; }
+      #dok-print-list { display: block !important; }
+    }
+
+    /* ── Immobilien Ja/Nein Selector ── */
+    .immo-jn-wrap { padding: 20px 24px 8px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .immo-jn-label { font-size: 13px; color: #555; font-weight: 600; min-width: 220px; }
+    .immo-count-wrap { padding: 4px 24px 20px; display: none; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .immo-count-label { font-size: 13px; color: #555; font-weight: 600; min-width: 120px; }
+    .immo-count-btns { display: flex; gap: 8px; }
+    .immo-count-btn {
+      width: 36px; height: 36px; border: 1px solid #e2ddd0; border-radius: 2px;
+      background: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+      color: #555; transition: all .2s;
+    }
+    .immo-count-btn:hover { border-color: var(--gold-mid); color: var(--gold-mid); }
+    .immo-count-btn.active { background: var(--gold-mid); border-color: var(--gold-mid); color: #111; }
+    .immo-item.immo-hidden { display: none !important; }
+
+    /* ── Privatkredit Block ── */
+    .privatkredit-block { display: none; }
+    body.privatkredit .privatkredit-block { display: block; }
+    /* Gewerblich-Karte ist bei Privat-/KFZ-Kredit wählbar – keine Sperre */
+    body.privatkredit .nicht-pk { display: none; }
+    .immo-finance-block { display: block; }
+    body.privatkredit .immo-finance-block { display: none !important; }
+
+    /* ── Privatkredit Zeilen ── */
+    .pk-row { display: grid; grid-template-columns: 200px 1fr; align-items: center; border-bottom: 1px solid #f5f0e0; padding: 7px 16px; gap: 12px; }
+    .pk-row.pk-row-full { grid-template-columns: 200px 1fr 1fr; }
+    body.single .pk-row.pk-row-full { grid-template-columns: 200px 1fr; }
+    body.single .pk-row.pk-row-full > *:nth-child(3) { display: none; }
+    .pk-row:last-child { border-bottom: none; }
+    .pk-row input, .pk-row select, .pk-row textarea { width: 100%; padding: 7px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #fafafa; font-family: inherit; }
+    .pk-row input:focus, .pk-row select:focus, .pk-row textarea:focus { outline: none; border-color: var(--gold); background: #fff; }
+    .pk-header-row { display: grid; grid-template-columns: 200px 1fr 1fr; background: #fafafa; padding: 8px 16px; gap: 12px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+    body.single .pk-header-row { grid-template-columns: 200px 1fr; }
+    body.single .pk-header-row > *:nth-child(3) { display: none; }
+    .pk-radio-group { display: flex; gap: 16px; }
+    .pk-radio-group label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; }
+    .kredit-panel { border: 1px solid #e8e0c8; border-radius: 6px; margin: 12px 20px; overflow: hidden; }
+    .kredit-panel.kredit-hidden { display: none !important; }
+    .kredit-panel-head { background: #fafaf5; padding: 10px 16px; font-weight: 700; font-size: 13px; color: #555; border-bottom: 1px solid #e8e0c8; }
+
+    @keyframes goldShimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    @media print {
+      header, .progress-wrap, .nav-buttons, .action-panel { display: none !important; }
+      body { background: #fff; }
+      main { margin: 0; padding: 0; }
+      .section-card { border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
+      .step-content { display: block !important; }
+      .immo-body { display: block !important; }
+    }
+
+    @media (max-width: 640px) {
+      .vorhaben-wrap, .option-wrap { flex-direction: column; align-items: center; padding: 20px 16px; }
+      .col-grid, .col-header-row { grid-template-columns: 1fr !important; }
+      body.single .col-grid > *:nth-child(3), body.single .col-header-row > *:nth-child(3) { display: none; }
+      .col-label { font-weight: 700; padding-top: 8px; }
+      .verbind-grid, .verbind-header { grid-template-columns: 1fr 1fr; }
+      header h1 { display: none; }
+      .action-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body class="single">
+
+<header>
+  <div class="logo-box">
+    <div class="logo-circle">AW</div>
+    <div class="logo-text"><strong>Anja Woßlick</strong><span>Finanzierungsexpertin</span></div>
+  </div>
+
+  <h1><strong>Selbstauskunft</strong>Finanzierungsanfrage erfassen</h1>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="step-tab active" onclick="goStep(1)"><div class="step-num" id="sn1">1</div><br>Vorhaben</div>
+    <div class="step-tab" onclick="goStep(2)"><div class="step-num" id="sn2">2</div><br>Persönliche Daten</div>
+    <div class="step-tab" onclick="goStep(3)"><div class="step-num" id="sn3">3</div><br>Berufliche Angaben &amp; Immobilien</div>
+    <div class="step-tab" onclick="goStep(4)"><div class="step-num" id="sn4">4</div><br>Vermögen &amp; Verbindl.</div>
+    <div class="step-tab" onclick="goStep(5)"><div class="step-num" id="sn5">5</div><br>Einnahmen &amp; Ausgaben</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ═══ SCHRITT 1: Vorhaben ═══ -->
+  <div class="step-content active" id="step1">
+    <div class="section-card">
+      <div class="section-header">1 · Art der Finanzierung</div>
+      <div class="vorhaben-wrap">
+        <div class="vorhaben-card" id="card-eigenheim" onclick="selectVorhaben('eigenheim')">
+          <span class="vorhaben-icon">🏡</span>
+          <div class="vorhaben-title">Eigenheim</div>
+          <div class="vorhaben-desc">Selbstgenutztes Wohneigentum</div>
+          <span class="vorhaben-badge">✓ Ausgewählt</span>
+        </div>
+        <div class="vorhaben-card" id="card-kapital" onclick="selectVorhaben('kapitalanlage')">
+          <span class="vorhaben-icon">🏢</span>
+          <div class="vorhaben-title">Kapitalanlage</div>
+          <div class="vorhaben-desc">Vermietete Immobilie</div>
+          <span class="vorhaben-badge">✓ Ausgewählt</span>
+        </div>
+        <div class="vorhaben-card" id="card-privatkredit" onclick="selectVorhaben('privatkredit')">
+          <span class="vorhaben-icon">💳</span>
+          <div class="vorhaben-title">Privat-/KFZ-Kredit</div>
+          <div class="vorhaben-desc">Persönliches Darlehen oder KFZ-Finanzierung</div>
+          <span class="vorhaben-badge">✓ Ausgewählt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">2 · Anzahl Darlehensnehmer</div>
+      <div class="option-wrap">
+        <div class="option-card" id="card-dn1" onclick="selectDarlehensnehmer(1)">
+          <span class="option-icon">👤</span>
+          <div class="option-title">1 Darlehensnehmer</div>
+          <div class="option-desc">Nur Antragsteller</div>
+          <span class="option-badge">✓ Ausgewählt</span>
+        </div>
+        <div class="option-card" id="card-dn2" onclick="selectDarlehensnehmer(2)">
+          <span class="option-icon">👥</span>
+          <div class="option-title">2 Darlehensnehmer</div>
+          <div class="option-desc">Antragsteller + Mitantragsteller</div>
+          <span class="option-badge">✓ Ausgewählt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">3 · Kundentyp</div>
+      <div class="option-wrap">
+        <div class="option-card" id="card-privat" onclick="selectKundentyp('privat')">
+          <span class="option-icon">👨‍💼</span>
+          <div class="option-title">Privat</div>
+          <div class="option-desc">Private Selbstauskunft</div>
+          <span class="option-badge">✓ Ausgewählt</span>
+        </div>
+        <div class="option-card" id="card-gewerbe" onclick="selectKundentyp('gewerblich')">
+          <span class="option-icon">🏭</span>
+          <div class="option-title">Gewerblich</div>
+          <div class="option-desc">Gewerbliche Selbstauskunft</div>
+          <span class="option-badge">✓ Ausgewählt</span>
+        </div>
+      </div>
+      <div class="gewerbe-notice" id="gewerbe-notice">
+        <strong>⚙️ Gewerbliche Selbstauskunft – in Vorbereitung</strong>
+        Die gewerbliche Selbstauskunft wird in Kürze ergänzt.
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <span></span>
+      <button class="btn btn-primary" id="btn-step1-weiter" onclick="goStep(2)" disabled>Weiter → Persönliche Daten</button>
+    </div>
+  </div>
+
+  <!-- ═══ SCHRITT 2: Persönliche Daten ═══ -->
+  <div class="step-content" id="step2">
+    <div class="privat-block">
+    <div class="section-card">
+      <div class="section-header">Persönliche Daten</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="col-grid"><div class="col-label">Anrede</div>
+        <select name="a_anrede"><option value="">– bitte wählen –</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+        <select name="b_anrede"><option value="">– bitte wählen –</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+      </div>
+      <div class="col-grid"><div class="col-label">Vorname &amp; Name</div>
+        <input type="text" name="a_name" id="a_name" placeholder="Max Mustermann" />
+        <input type="text" name="b_name" placeholder="Erika Musterfrau" />
+      </div>
+      <div class="col-grid"><div class="col-label">Geburtsname</div><input type="text" name="a_geburtsname" /><input type="text" name="b_geburtsname" /></div>
+      <div class="col-grid"><div class="col-label">Telefon</div><input type="tel" name="a_telefon" placeholder="+49 …" /><input type="tel" name="b_telefon" placeholder="+49 …" /></div>
+      <div class="col-grid"><div class="col-label">E-Mail</div><input type="email" name="a_email" /><input type="email" name="b_email" /></div>
+      <div class="col-grid"><div class="col-label">Geb.-Datum &amp; Ort</div><input type="text" name="a_gebdatum" placeholder="TT.MM.JJJJ, Ort" /><input type="text" name="b_gebdatum" placeholder="TT.MM.JJJJ, Ort" /></div>
+      <div class="col-grid"><div class="col-label">Straße &amp; Hausnr.</div><input type="text" name="a_strasse" id="a_strasse" /><input type="text" name="b_strasse" /></div>
+      <div class="col-grid"><div class="col-label">PLZ &amp; Ort</div><input type="text" name="a_plzort" placeholder="01234 Dresden" /><input type="text" name="b_plzort" /></div>
+      <div class="col-grid"><div class="col-label">Wohnhaft seit</div><input type="text" name="a_wohnseit" placeholder="MM/JJJJ" /><input type="text" name="b_wohnseit" placeholder="MM/JJJJ" /></div>
+      <div class="col-grid"><div class="col-label">Staatsangehörigkeit</div><input type="text" name="a_staat" placeholder="Deutsch" /><input type="text" name="b_staat" placeholder="Deutsch" /></div>
+      <div class="col-grid"><div class="col-label">Familienstand</div>
+        <select name="a_famstand"><option value="">– bitte wählen –</option><option>ledig</option><option>verheiratet</option><option>geschieden</option><option>verwitwet</option><option>getrennt lebend</option></select>
+        <select name="b_famstand"><option value="">– bitte wählen –</option><option>ledig</option><option>verheiratet</option><option>geschieden</option><option>verwitwet</option><option>getrennt lebend</option></select>
+      </div>
+      <div class="col-grid"><div class="col-label">Güterstand</div>
+        <select name="a_gueterstand"><option value="">– bitte wählen –</option><option>Gesetzlicher Güterstand</option><option>Gütertrennung</option><option>Gütergemeinschaft</option></select>
+        <select name="b_gueterstand"><option value="">– bitte wählen –</option><option>Gesetzlicher Güterstand</option><option>Gütertrennung</option><option>Gütergemeinschaft</option></select>
+      </div>
+      <div class="col-grid"><div class="col-label">Anzahl Kinder im Haushalt</div><input type="number" name="a_kinder" min="0" value="0" oninput="autoKindergeld('a')" /><input type="number" name="b_kinder" min="0" value="0" oninput="autoKindergeld('b')" /></div>
+      <div class="col-grid"><div class="col-label">Name &amp; Geb.-Datum Kinder</div><input type="text" name="a_kindernamen" placeholder="Name, TT.MM.JJJJ; …" /><input type="text" name="b_kindernamen" /></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Renteneintritt</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="col-grid"><div class="col-label">Rentenbeginn</div><input type="text" name="a_rentenbeginn" placeholder="MM/JJJJ" /><input type="text" name="b_rentenbeginn" placeholder="MM/JJJJ" /></div>
+      <div class="col-grid"><div class="col-label">Gesetzl. Rente in €</div><input class="money-field" type="text" name="a_rente_gesetzl" placeholder="0,00 €" /><input class="money-field" type="text" name="b_rente_gesetzl" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Private Rente in €</div><input class="money-field" type="text" name="a_rente_privat" placeholder="0,00 €" /><input class="money-field" type="text" name="b_rente_privat" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Sonstige Rente in €</div><input class="money-field" type="text" name="a_rente_sonst" placeholder="0,00 €" /><input class="money-field" type="text" name="b_rente_sonst" placeholder="0,00 €" /></div>
+    </div>
+
+    </div><!-- /privat-block -->
+
+    <div class="gewerbe-block">
+    <div class="section-card">
+      <div class="section-header">Persönliche Daten</div>
+      <div class="gew-dual-header"><div></div><div class="gew-h">Antragsteller / Bürge</div><div class="gew-h mitant-col">Mitantragsteller / Ehegatte</div></div>
+      <div class="gew-col-grid"><div class="col-label">Anrede</div>
+        <select name="ga_anrede"><option value="">–</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+        <select name="gb_anrede" class="mitant-col"><option value="">–</option><option>Herr</option><option>Frau</option><option>Divers</option></select>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Vorname &amp; Name<br><small>ggf. Geburtsname</small></div>
+        <input type="text" name="ga_name" placeholder="Vorname Nachname"/>
+        <input type="text" name="gb_name" class="mitant-col" placeholder="Vorname Nachname"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Geb.-Datum &amp; Geburtsort</div>
+        <input type="text" name="ga_gebdatum" placeholder="TT.MM.JJJJ, Ort"/>
+        <input type="text" name="gb_gebdatum" class="mitant-col" placeholder="TT.MM.JJJJ, Ort"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Telefon</div>
+        <input type="text" name="ga_telefon"/>
+        <input type="text" name="gb_telefon" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">E-Mail</div>
+        <input type="email" name="ga_email"/>
+        <input type="email" name="gb_email" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Straße &amp; Hausnr.</div>
+        <input type="text" name="ga_strasse"/>
+        <input type="text" name="gb_strasse" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">PLZ &amp; Ort</div>
+        <input type="text" name="ga_plzort"/>
+        <input type="text" name="gb_plzort" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Wohnhaft seit</div>
+        <input type="text" name="ga_wohnhaft" placeholder="MM/JJJJ"/>
+        <input type="text" name="gb_wohnhaft" class="mitant-col" placeholder="MM/JJJJ"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Staatsangehörigkeit</div>
+        <input type="text" name="ga_staat"/>
+        <input type="text" name="gb_staat" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Familienstand</div>
+        <select name="ga_famstand"><option value="">–</option><option>ledig</option><option>verheiratet</option><option>geschieden</option><option>verwitwet</option><option>eingetr. Lebenspartnerschaft</option></select>
+        <select name="gb_famstand" class="mitant-col"><option value="">–</option><option>ledig</option><option>verheiratet</option><option>geschieden</option><option>verwitwet</option><option>eingetr. Lebenspartnerschaft</option></select>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Güterstand</div>
+        <div>
+          <div class="toggle-wrap" id="gew-gs-a-wrap">
+            <button type="button" class="tog-btn" onclick="setGS('ga','Gesetzlich',this)">Gesetzlich</button>
+            <button type="button" class="tog-btn" onclick="setGS('ga','Gütertrennung',this)">Gütertrennung</button>
+            <button type="button" class="tog-btn" onclick="setGS('ga','Gütergemeinschaft',this)">Gütergemeinschaft</button>
+          </div>
+          <input type="hidden" name="ga_gueterstand" id="ga_gueterstand"/>
+        </div>
+        <div class="mitant-col">
+          <div class="toggle-wrap" id="gew-gs-b-wrap">
+            <button type="button" class="tog-btn" onclick="setGS('gb','Gesetzlich',this)">Gesetzlich</button>
+            <button type="button" class="tog-btn" onclick="setGS('gb','Gütertrennung',this)">Gütertrennung</button>
+            <button type="button" class="tog-btn" onclick="setGS('gb','Gütergemeinschaft',this)">Gütergemeinschaft</button>
+          </div>
+          <input type="hidden" name="gb_gueterstand" id="gb_gueterstand"/>
+        </div>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Kinder (Anzahl, Geburtstage)</div>
+        <input type="text" name="ga_kinder" placeholder="z.B. 2 · 01.01.2015 · 05.06.2018"/>
+        <input type="text" name="gb_kinder" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Steuer-ID</div>
+        <input type="text" name="ga_steuerid"/>
+        <input type="text" name="gb_steuerid" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">IBAN</div>
+        <input type="text" name="ga_iban"/>
+        <input type="text" name="gb_iban" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">BIC / Kreditinstitut</div>
+        <input type="text" name="ga_bic"/>
+        <input type="text" name="gb_bic" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Anzahl KFZ im Haushalt<br><small>ohne Firmenfahrzeuge</small></div>
+        <input type="number" name="ga_kfz_anz" placeholder="0" min="0"/>
+        <input type="number" name="gb_kfz_anz" class="mitant-col" placeholder="0" min="0"/>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Angaben zum Unternehmen</div>
+      <div class="gew-col-grid" style="grid-template-columns:210px 1fr!important"><div class="col-label">Firmenname / Unternehmensname</div>
+        <input type="text" name="gfirma_name"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Rechtsform</div>
+        <select name="gfirma_rechtsform">
+          <option value="">– bitte wählen –</option>
+          <option>Einzelunternehmen / Freiberufler</option><option>GbR</option><option>OHG</option><option>KG</option>
+          <option>GmbH</option><option>GmbH &amp; Co. KG</option><option>UG (haftungsbeschränkt)</option><option>AG</option><option>Sonstige</option>
+        </select>
+        <input type="text" name="gfirma_rechtsform_sonst" placeholder="ggf. Sonstiges / Legitimation"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Nr. Handelsregister</div>
+        <input type="text" name="gfirma_hr_nr" placeholder="z.B. HRB 12345"/>
+        <input type="text" name="gfirma_hr_datum" placeholder="HR-Eintragung am (Datum)"/>
+      </div>
+      <div class="gew-col-grid" style="grid-template-columns:210px 1fr!important"><div class="col-label">Selbstständig / Gewerbetreibend seit</div>
+        <input type="text" name="gfirma_seit" placeholder="MM/JJJJ"/>
+      </div>
+      <div class="gew-col-grid" style="grid-template-columns:210px 1fr!important"><div class="col-label">Branche / Geschäftszweig / Beruf</div>
+        <input type="text" name="gfirma_branche"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Art der Tätigkeit</div>
+        <select name="ga_taetigkeit">
+          <option value="">– bitte wählen –</option>
+          <option>Selbstständig</option><option>Freiberufler</option><option>Gewerbetreibender</option>
+          <option>Geschäftsführer</option><option>Gesellschafter-Geschäftsführer</option><option>Sonstige</option>
+        </select>
+        <select name="gb_taetigkeit" class="mitant-col">
+          <option value="">– bitte wählen –</option>
+          <option>Selbstständig</option><option>Freiberufler</option><option>Gewerbetreibender</option><option>Angestellt</option><option>Sonstige</option>
+        </select>
+      </div>
+    </div>
+    </div><!-- /gewerbe-block -->
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goStep(1)">← Zurück</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Weiter → Immobilien</button>
+    </div>
+  </div>
+
+  <!-- ═══ SCHRITT 3: Immobilien / Beruf ═══ -->
+  <div class="step-content" id="step3">
+
+    <div class="privat-block">
+
+    <div class="section-card">
+      <div class="section-header">Beschäftigung</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+
+      <!-- Nur bei Eigenheim / Kapitalanlage (nicht PK) -->
+      <div class="col-grid nicht-pk"><div class="col-label">Art der Beschäftigung</div>
+        <select name="a_beschaeftigung"><option value="">– bitte wählen –</option><option>Angestellt</option><option>Selbständig</option><option>Freiberufler</option><option>Beamter</option><option>Rentner</option><option>nicht berufstätig</option></select>
+        <select name="b_beschaeftigung"><option value="">– bitte wählen –</option><option>Angestellt</option><option>Selbständig</option><option>Freiberufler</option><option>Beamter</option><option>Rentner</option><option>nicht berufstätig</option></select>
+      </div>
+
+      <!-- Öffentlicher Dienst: beide Modi -->
+      <div class="col-grid">
+        <div class="col-label">Öffentlicher Dienst</div>
+        <div class="od-toggle" id="od-a">
+          <div class="od-btn" onclick="setOD('a','ja',this)">Ja</div>
+          <div class="od-btn active-no" onclick="setOD('a','nein',this)">Nein</div>
+        </div>
+        <div class="od-toggle" id="od-b">
+          <div class="od-btn" onclick="setOD('b','ja',this)">Ja</div>
+          <div class="od-btn active-no" onclick="setOD('b','nein',this)">Nein</div>
+        </div>
+      </div>
+      <input type="hidden" id="a_oefd" value="nein" />
+      <input type="hidden" id="b_oefd" value="nein" />
+
+      <!-- Nur bei Eigenheim / Kapitalanlage (nicht PK) -->
+      <div class="col-grid nicht-pk"><div class="col-label">Arbeitgeber</div><input type="text" name="a_arbeitgeber" /><input type="text" name="b_arbeitgeber" /></div>
+      <div class="col-grid nicht-pk"><div class="col-label">Beruf</div><input type="text" name="a_beruf" /><input type="text" name="b_beruf" /></div>
+      <div class="col-grid nicht-pk"><div class="col-label">Beschäftigt seit</div><input type="text" name="a_seit" placeholder="MM/JJJJ" /><input type="text" name="b_seit" placeholder="MM/JJJJ" /></div>
+      <div class="col-grid nicht-pk">
+        <div class="col-label">Befristet</div>
+        <div class="radio-group"><label><input type="radio" name="a_befristet" value="nein" checked /> Nein</label><label><input type="radio" name="a_befristet" value="ja" /> Ja</label></div>
+        <div class="radio-group"><label><input type="radio" name="b_befristet" value="nein" checked /> Nein</label><label><input type="radio" name="b_befristet" value="ja" /> Ja</label></div>
+      </div>
+
+      <!-- Detaillierte Felder nur bei Privat-/KFZ-Kredit -->
+      <div class="privatkredit-block">
+        <div class="col-grid"><div class="col-label">Berufsgruppe</div>
+          <select name="pk_a_berufsgruppe"><option value="">– bitte wählen –</option><option>Angestellter</option><option>Beamter</option><option>Selbständiger</option><option>Freiberufler</option><option>Rentner / Pensionär</option><option>nicht berufstätig</option></select>
+          <select name="pk_b_berufsgruppe"><option value="">– bitte wählen –</option><option>Angestellter</option><option>Beamter</option><option>Selbständiger</option><option>Freiberufler</option><option>Rentner / Pensionär</option><option>nicht berufstätig</option></select>
+        </div>
+        <div class="col-grid"><div class="col-label">Berufsbezeichnung</div><input type="text" name="pk_a_berufsbezeichnung" /><input type="text" name="pk_b_berufsbezeichnung" /></div>
+        <div class="col-grid"><div class="col-label">Branche</div><input type="text" name="pk_a_branche" /><input type="text" name="pk_b_branche" /></div>
+        <div class="col-grid"><div class="col-label">Name des Arbeitgebers</div><input type="text" name="pk_a_arbeitgeber" /><input type="text" name="pk_b_arbeitgeber" /></div>
+        <div class="col-grid"><div class="col-label">PLZ, Ort (Arbeitgeber)</div><input type="text" name="pk_a_ag_plzort" /><input type="text" name="pk_b_ag_plzort" /></div>
+        <div class="col-grid"><div class="col-label">Straße, Nr. (Arbeitgeber)</div><input type="text" name="pk_a_ag_strasse" /><input type="text" name="pk_b_ag_strasse" /></div>
+        <div class="col-grid"><div class="col-label">Beschäftigt seit</div><input type="text" name="pk_a_seit" placeholder="MM/JJJJ" /><input type="text" name="pk_b_seit" placeholder="MM/JJJJ" /></div>
+        <div class="col-grid"><div class="col-label">Arbeitszeit</div>
+          <select name="pk_a_arbeitszeit"><option value="">–</option><option>Vollzeit</option><option>Teilzeit</option><option>Mini-Job</option><option>Selbständig / variabel</option></select>
+          <select name="pk_b_arbeitszeit"><option value="">–</option><option>Vollzeit</option><option>Teilzeit</option><option>Mini-Job</option><option>Selbständig / variabel</option></select>
+        </div>
+        <div class="col-grid">
+          <div class="col-label">Arbeitsverhältnis befristet?</div>
+          <div class="radio-group"><label><input type="radio" name="pk_a_befristet" value="nein" checked /> Nein</label><label><input type="radio" name="pk_a_befristet" value="ja" /> Ja</label></div>
+          <div class="radio-group"><label><input type="radio" name="pk_b_befristet" value="nein" checked /> Nein</label><label><input type="radio" name="pk_b_befristet" value="ja" /> Ja</label></div>
+        </div>
+      </div>
+
+      <!-- Gemeinsame Felder: beide Modi -->
+      <div class="col-grid"><div class="col-label">Steuer-ID</div><input type="text" name="a_steuerid" /><input type="text" name="b_steuerid" /></div>
+      <div class="col-grid"><div class="col-label">Anzahl KFZ im Haushalt</div><input type="number" name="a_kfz_anz" min="0" value="0" /><input type="number" name="b_kfz_anz" min="0" value="0" /></div>
+    </div>
+
+    </div><!-- /privat-block -->
+
+    <div class="immo-finance-block">
+      <div class="section-card">
+        <div class="section-header">Immobilienvermögen</div>
+        <div class="immo-jn-wrap">
+          <div class="immo-jn-label">Bestehende Immobilien vorhanden?</div>
+          <div class="od-toggle" style="max-width:160px">
+            <div class="od-btn" id="immo-ja-btn" onclick="selectImmoJaNein(true)">Ja</div>
+            <div class="od-btn" id="immo-nein-btn" onclick="selectImmoJaNein(false)">Nein</div>
+          </div>
+        </div>
+        <div class="immo-count-wrap" id="immo-count-wrap">
+          <div class="immo-count-label">Wie viele Immobilien?</div>
+          <div class="immo-count-btns">
+            <button class="immo-count-btn" onclick="setImmoCount(1)">1</button>
+            <button class="immo-count-btn" onclick="setImmoCount(2)">2</button>
+            <button class="immo-count-btn" onclick="setImmoCount(3)">3</button>
+            <button class="immo-count-btn" onclick="setImmoCount(4)">4</button>
+            <button class="immo-count-btn" onclick="setImmoCount(5)">5</button>
+            <button class="immo-count-btn" onclick="setImmoCount(6)">6</button>
+          </div>
+        </div>
+        <div id="immos"></div>
+      </div>
+    </div>
+
+    <div class="privatkredit-block">
+      <div class="section-card">
+        <div class="section-header">Berufliche Angaben und Immobilien</div>
+        <div class="pk-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+        <div class="pk-row pk-row-full">
+          <div class="col-label">Wohnsituation</div>
+          <select name="pk_a_wohnsituation"><option value="">–</option><option>zur Miete</option><option>Eigentümer</option><option>bei den Eltern</option><option>mietfrei</option></select>
+          <select name="pk_b_wohnsituation"><option value="">–</option><option>zur Miete</option><option>Eigentümer</option><option>bei den Eltern</option><option>mietfrei</option></select>
+        </div>
+        <!-- Vermietete Immobilien Ja/Nein -->
+        <div class="pk-row" style="border-top: 2px solid #f0ead6; margin-top: 4px;">
+          <div class="col-label" style="font-weight:700;">Vermietete Immobilien?</div>
+          <div class="immo-jn-wrap">
+            <div class="od-btn" id="pk-vimmo-ja-btn" onclick="selectVimmoJaNein(true)">Ja</div>
+            <div class="od-btn" id="pk-vimmo-nein-btn" onclick="selectVimmoJaNein(false)">Nein</div>
+          </div>
+        </div>
+        <div id="pk-vimmo-wrap" style="display:none;">
+          <div class="immo-count-wrap" id="pk-vimmo-count-wrap" style="display:flex;padding:12px 16px 8px;">
+            <div class="immo-count-label">Wie viele vermietete Immobilien?</div>
+            <div class="immo-count-btns">
+              <button class="immo-count-btn" id="pk-vimmo-cnt-1" onclick="setVimmoCount(1)">1</button>
+              <button class="immo-count-btn" id="pk-vimmo-cnt-2" onclick="setVimmoCount(2)">2</button>
+              <button class="immo-count-btn" id="pk-vimmo-cnt-3" onclick="setVimmoCount(3)">3</button>
+              <button class="immo-count-btn" id="pk-vimmo-cnt-4" onclick="setVimmoCount(4)">4</button>
+              <button class="immo-count-btn" id="pk-vimmo-cnt-5" onclick="setVimmoCount(5)">5</button>
+              <button class="immo-count-btn" id="pk-vimmo-cnt-6" onclick="setVimmoCount(6)">6</button>
+            </div>
+          </div>
+          <div id="pk-vimmo-panels">
+            <!-- IIFE generiert 6 Panels -->
+          </div>
+        </div>
+      </div>
+    </div><!-- /privatkredit-block -->
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goStep(2)">← Zurück</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Weiter → Vermögen</button>
+    </div>
+  </div>
+
+  <!-- ═══ SCHRITT 4: Vermögen & Verbindl. ═══ -->
+  <div class="step-content" id="step4">
+    <div class="privat-block">
+    <div class="section-card">
+      <div class="section-header">Vermögen</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="col-grid"><div class="col-label">Bank- / Sparguthaben in €</div><input class="money-field" type="text" name="a_spar" placeholder="0,00 €" /><input class="money-field" type="text" name="b_spar" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Wertpapiere / Aktien in €</div><input class="money-field" type="text" name="a_aktien" placeholder="0,00 €" /><input class="money-field" type="text" name="b_aktien" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Bausparguthaben in €</div><input class="money-field" type="text" name="a_bauspar" placeholder="0,00 €" /><input class="money-field" type="text" name="b_bauspar" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Termin- / Festgelder in €</div><input class="money-field" type="text" name="a_festgeld" placeholder="0,00 €" /><input class="money-field" type="text" name="b_festgeld" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Rückkaufswerte Versicherung</div><input class="money-field" type="text" name="a_rueckkauf" placeholder="0,00 €" /><input class="money-field" type="text" name="b_rueckkauf" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Sonstiges Vermögen</div><input class="money-field" type="text" name="a_sonst_verm" placeholder="0,00 €" /><input class="money-field" type="text" name="b_sonst_verm" placeholder="0,00 €" /></div>
+    </div>
+
+
+
+
+    </div><!-- /privat-block -->
+
+    <div class="gewerbe-block">
+    <div class="section-card">
+      <div class="section-header">Vermögenswerte</div>
+      <div class="sub-h">Guthaben / Wertpapierdepots</div>
+      <table class="tbl">
+        <thead><tr><th style="width:40%">Sparkasse / Kreditinstitut / Bausparkasse</th><th style="width:25%">Konto-/Depot-Nr.</th><th style="width:35%">Guthaben / Kurswert ca. €</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="ggut1_inst"/></td><td><input type="text" name="ggut1_nr"/></td><td><input type="number" name="ggut1_betrag" min="0"/></td></tr>
+          <tr><td><input type="text" name="ggut2_inst"/></td><td><input type="text" name="ggut2_nr"/></td><td><input type="number" name="ggut2_betrag" min="0"/></td></tr>
+          <tr><td><input type="text" name="ggut3_inst"/></td><td><input type="text" name="ggut3_nr"/></td><td><input type="number" name="ggut3_betrag" min="0"/></td></tr>
+          <tr><td><input type="text" name="ggut4_inst"/></td><td><input type="text" name="ggut4_nr"/></td><td><input type="number" name="ggut4_betrag" min="0"/></td></tr>
+          <tr><td><input type="text" name="ggut5_inst"/></td><td><input type="text" name="ggut5_nr"/></td><td><input type="number" name="ggut5_betrag" min="0"/></td></tr>
+        </tbody>
+      </table>
+      <div class="sub-h" style="margin-top:14px">Lebens- / Rentenversicherungen</div>
+      <table class="tbl">
+        <thead><tr><th style="width:30%">Versicherungsgesellschaft</th><th style="width:20%">Vertrags-Nr.</th><th style="width:25%">Versicherungssumme €</th><th style="width:25%">Rückkaufswert ca. €</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="glv1_ges"/></td><td><input type="text" name="glv1_nr"/></td><td><input type="number" name="glv1_vs" min="0"/></td><td><input type="number" name="glv1_rk" min="0"/></td></tr>
+          <tr><td><input type="text" name="glv2_ges"/></td><td><input type="text" name="glv2_nr"/></td><td><input type="number" name="glv2_vs" min="0"/></td><td><input type="number" name="glv2_rk" min="0"/></td></tr>
+          <tr><td><input type="text" name="glv3_ges"/></td><td><input type="text" name="glv3_nr"/></td><td><input type="number" name="glv3_vs" min="0"/></td><td><input type="number" name="glv3_rk" min="0"/></td></tr>
+          <tr><td><input type="text" name="glv4_ges"/></td><td><input type="text" name="glv4_nr"/></td><td><input type="number" name="glv4_vs" min="0"/></td><td><input type="number" name="glv4_rk" min="0"/></td></tr>
+        </tbody>
+      </table>
+      <div class="sub-h" style="margin-top:14px">Betriebsvermögen</div>
+      <table class="tbl">
+        <thead><tr><th style="width:70%">Beschreibung</th><th style="width:30%">Zeitwert ca. €</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="gbv1_beschr"/></td><td><input type="number" name="gbv1_wert" min="0"/></td></tr>
+          <tr><td><input type="text" name="gbv2_beschr"/></td><td><input type="number" name="gbv2_wert" min="0"/></td></tr>
+          <tr><td><input type="text" name="gbv3_beschr"/></td><td><input type="number" name="gbv3_wert" min="0"/></td></tr>
+        </tbody>
+      </table>
+      <div class="sub-h" style="margin-top:14px">Sonstige Vermögensgegenstände</div>
+      <table class="tbl">
+        <thead><tr><th style="width:70%">Art des Vermögens</th><th style="width:30%">Zeitwert ca. €</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="gsv1_art"/></td><td><input type="number" name="gsv1_wert" min="0"/></td></tr>
+          <tr><td><input type="text" name="gsv2_art"/></td><td><input type="number" name="gsv2_wert" min="0"/></td></tr>
+          <tr><td><input type="text" name="gsv3_art"/></td><td><input type="number" name="gsv3_wert" min="0"/></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Private Verbindlichkeiten</div>
+      <table class="tbl">
+        <thead><tr><th>Gläubiger</th><th>Zins + Tilgung mtl. €</th><th>Vertragsbeginn</th><th>Restschuld €</th><th>Zinssatz %</th><th>Abl. Zinsbindung</th><th>Ende Laufzeit</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="gpv1_gl"/></td><td><input type="number" name="gpv1_rate" min="0"/></td><td><input type="text" name="gpv1_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gpv1_rest" min="0"/></td><td><input type="number" name="gpv1_zins" min="0" step="0.01"/></td><td><input type="text" name="gpv1_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gpv1_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="gpv2_gl"/></td><td><input type="number" name="gpv2_rate" min="0"/></td><td><input type="text" name="gpv2_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gpv2_rest" min="0"/></td><td><input type="number" name="gpv2_zins" min="0" step="0.01"/></td><td><input type="text" name="gpv2_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gpv2_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="gpv3_gl"/></td><td><input type="number" name="gpv3_rate" min="0"/></td><td><input type="text" name="gpv3_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gpv3_rest" min="0"/></td><td><input type="number" name="gpv3_zins" min="0" step="0.01"/></td><td><input type="text" name="gpv3_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gpv3_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="gpv4_gl"/></td><td><input type="number" name="gpv4_rate" min="0"/></td><td><input type="text" name="gpv4_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gpv4_rest" min="0"/></td><td><input type="number" name="gpv4_zins" min="0" step="0.01"/></td><td><input type="text" name="gpv4_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gpv4_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="gpv5_gl"/></td><td><input type="number" name="gpv5_rate" min="0"/></td><td><input type="text" name="gpv5_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="gpv5_rest" min="0"/></td><td><input type="number" name="gpv5_zins" min="0" step="0.01"/></td><td><input type="text" name="gpv5_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="gpv5_ende" placeholder="MM/JJJJ"/></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Gewerbliche Verbindlichkeiten / sonstige Verpflichtungen</div>
+      <div class="sub-h">Bürgschaftsverpflichtungen</div>
+      <div class="gew-col-grid" style="grid-template-columns:210px 1fr 1fr!important"><div class="col-label">Bürgschaftsbetrag €</div>
+        <input class="money-field" type="text" name="gbuerg_betrag" placeholder="0,00 €"/>
+        <input type="text" name="gbuerg_haupt" placeholder="Hauptschuldner"/>
+      </div>
+      <div class="sub-h" style="margin-top:14px">Gewerbliche Darlehen / Kreditverpflichtungen</div>
+      <table class="tbl">
+        <thead><tr><th>Gläubiger</th><th>Zins + Tilgung p.a. €</th><th>Vertragsbeginn</th><th>Restschuld €</th><th>Zinssatz %</th><th>Abl. Zinsbindung</th><th>Ende Laufzeit</th></tr></thead>
+        <tbody>
+          <tr><td><input type="text" name="ggv1_gl"/></td><td><input type="number" name="ggv1_rate" min="0"/></td><td><input type="text" name="ggv1_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv1_rest" min="0"/></td><td><input type="number" name="ggv1_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv1_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv1_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="ggv2_gl"/></td><td><input type="number" name="ggv2_rate" min="0"/></td><td><input type="text" name="ggv2_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv2_rest" min="0"/></td><td><input type="number" name="ggv2_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv2_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv2_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="ggv3_gl"/></td><td><input type="number" name="ggv3_rate" min="0"/></td><td><input type="text" name="ggv3_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv3_rest" min="0"/></td><td><input type="number" name="ggv3_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv3_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv3_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="ggv4_gl"/></td><td><input type="number" name="ggv4_rate" min="0"/></td><td><input type="text" name="ggv4_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv4_rest" min="0"/></td><td><input type="number" name="ggv4_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv4_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv4_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="ggv5_gl"/></td><td><input type="number" name="ggv5_rate" min="0"/></td><td><input type="text" name="ggv5_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv5_rest" min="0"/></td><td><input type="number" name="ggv5_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv5_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv5_ende" placeholder="MM/JJJJ"/></td></tr>
+          <tr><td><input type="text" name="ggv6_gl"/></td><td><input type="number" name="ggv6_rate" min="0"/></td><td><input type="text" name="ggv6_begin" placeholder="MM/JJJJ"/></td><td><input type="number" name="ggv6_rest" min="0"/></td><td><input type="number" name="ggv6_zins" min="0" step="0.01"/></td><td><input type="text" name="ggv6_zinsbind" placeholder="MM/JJJJ"/></td><td><input type="text" name="ggv6_ende" placeholder="MM/JJJJ"/></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Erklärungen zu Rechts- und Insolvenzverfahren</div>
+      <p class="section-note" style="padding:12px 20px;">Bitte zutreffende Aussagen ankreuzen und ggf. Datum des Verfahrens angeben.</p>
+      <div style="padding: 8px 20px">
+        <div class="cb-row"><input type="checkbox" name="gcb_klage" id="gcb_klage"/><label class="cb-text" for="gcb_klage">Es schwebt oder schwebte ein Klage- oder Mahnverfahren / Es hat ein Restrukturierungs- oder Insolvenzverfahren bzw. ein außergerichtlicher Vergleich stattgefunden oder findet derzeit statt.</label><input type="text" name="gcb_klage_datum" placeholder="Datum des Verfahrens" class="cb-date"/></div>
+        <div class="cb-row"><input type="checkbox" name="gcb_eid_antrag" id="gcb_eid_antrag"/><label class="cb-text" for="gcb_eid_antrag">Es ist ein Antrag auf Einleitung des Verfahrens zur Abgabe der eidesstattlichen Versicherung / Vermögensauskunft gestellt worden.</label></div>
+        <div class="cb-row"><input type="checkbox" name="gcb_eid_geleistet" id="gcb_eid_geleistet"/><label class="cb-text" for="gcb_eid_geleistet">Es ist das Verfahren zur Abgabe der eidesstattlichen Versicherung / Vermögensauskunft bereits durchgeführt worden / der Offenbarungseid wurde bereits geleistet.</label></div>
+      </div>
+    </div>
+    </div><!-- /gewerbe-block -->
+
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goStep(3)">← Zurück</button>
+      <button class="btn btn-primary" onclick="goStep(5)">Weiter → Einnahmen &amp; Ausgaben</button>
+    </div>
+  </div>  <!-- ═══ SCHRITT 5: Einnahmen & Ausgaben + Abschluss ═══ -->
+  <div class="step-content" id="step5">
+  <div class="immo-finance-block">
+    <div class="privat-block">
+    <div class="section-card">
+      <div class="section-header">Einnahmen (monatliche Angabe in €)</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="col-grid"><div class="col-label">Anzahl Gehälter pro Jahr</div><input type="number" name="a_gehaelter" min="1" max="14" value="12" /><input type="number" name="b_gehaelter" min="1" max="14" value="12" /></div>
+      <div class="col-grid"><div class="col-label">Nettoeinkommen / Gewinn</div><input class="money-field" type="text" name="a_netto" placeholder="0,00 €" /><input class="money-field" type="text" name="b_netto" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Nebenverdienst</div><input class="money-field" type="text" name="a_neben" placeholder="0,00 €" /><input class="money-field" type="text" name="b_neben" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Kindergeld / Unterhalt</div><input class="money-field" type="text" name="a_kindergeld" placeholder="0,00 €" /><input class="money-field" type="text" name="b_kindergeld" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Einnahmen aus Vermietung<br><small style="font-size:10px;color:#C8A832;font-weight:600">↻ auto aus Immobilien</small></div><input type="text" name="a_vermietung" class="sum-field money-field" placeholder="0,00 €" /><input class="money-field" type="text" name="b_vermietung" placeholder="0,00 €" /></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Ausgaben (monatliche Angabe in €)</div>
+      <div class="col-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="col-grid"><div class="col-label">Mietausgaben</div><input class="money-field" type="text" name="a_miete" placeholder="0,00 €" /><input class="money-field" type="text" name="b_miete" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Unterhaltsverpflichtungen</div><input class="money-field" type="text" name="a_unterhalt" placeholder="0,00 €" /><input class="money-field" type="text" name="b_unterhalt" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Kinderbetreuung</div><input class="money-field" type="text" name="a_kinder_bet" placeholder="0,00 €" /><input class="money-field" type="text" name="b_kinder_bet" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Bewirtschaftungskosten</div><input class="money-field" type="text" name="a_bewirt" placeholder="0,00 €" /><input class="money-field" type="text" name="b_bewirt" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Private Krankenversicherung</div><input class="money-field" type="text" name="a_pkv" placeholder="0,00 €" /><input class="money-field" type="text" name="b_pkv" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Private Vorsorge</div><input class="money-field" type="text" name="a_vorsorge" placeholder="0,00 €" /><input class="money-field" type="text" name="b_vorsorge" placeholder="0,00 €" /></div>
+      <div class="col-grid"><div class="col-label">Kreditraten<br><small style="font-size:10px;color:#C8A832;font-weight:600">↻ auto aus Verbindlichkeiten</small></div><input type="text" name="a_kredit" class="sum-field money-field" placeholder="0,00 €" /><input class="money-field" type="text" name="b_kredit" placeholder="0,00 €" /></div>
+    </div>
+
+
+    </div><!-- /privat-block -->
+
+    <div class="gewerbe-block">
+    <div class="section-card">
+      <div class="section-header">Einnahmen (jährlich in €)</div>
+      <div class="sub-h">Nichtselbstständige Einkünfte</div>
+      <div class="gew-dual-header"><div></div><div class="gew-h">Antragsteller</div><div class="gew-h mitant-col">Mitantragsteller</div></div>
+      <div class="gew-col-grid"><div class="col-label">Bruttoeinkommen p.a.</div>
+        <input class="money-field" type="text" name="ga_brutto_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_brutto_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Beschäftigt bei (Arbeitgeber)</div>
+        <input type="text" name="ga_arbeitgeber"/>
+        <input type="text" name="gb_arbeitgeber" class="mitant-col"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Beschäftigt seit</div>
+        <input type="text" name="ga_besch_seit" placeholder="MM/JJJJ"/>
+        <input type="text" name="gb_besch_seit" class="mitant-col" placeholder="MM/JJJJ"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Einkommensschwankungen<br><small>letzte 5 Jahre (z.B. Kurzarbeit, Elternzeit)</small></div>
+        <div><div class="toggle-wrap"><button type="button" class="tog-btn" onclick="setTog('ga_eschwank','Ja',this)">Ja</button><button type="button" class="tog-btn" onclick="setTog('ga_eschwank','Nein',this)">Nein</button></div><input type="hidden" name="ga_eschwank" id="ga_eschwank"/></div>
+        <div class="mitant-col"><div class="toggle-wrap"><button type="button" class="tog-btn" onclick="setTog('gb_eschwank','Ja',this)">Ja</button><button type="button" class="tog-btn" onclick="setTog('gb_eschwank','Nein',this)">Nein</button></div><input type="hidden" name="gb_eschwank" id="gb_eschwank"/></div>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Erläuterung Schwankungen</div>
+        <input type="text" name="ga_eschwank_text" placeholder="Grund und Höhe"/>
+        <input type="text" name="gb_eschwank_text" class="mitant-col" placeholder="Grund und Höhe"/>
+      </div>
+
+      <div class="sub-h" style="margin-top:14px">Einkünfte aus Gewerbebetrieb / selbstständiger Arbeit</div>
+      <div class="gew-col-grid"><div class="col-label">Betriebsergebnis / Gewinn p.a.<br><small>lt. letztem Jahresabschluss / EÜR</small></div>
+        <input class="money-field" type="text" name="ga_gewinn_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_gewinn_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Gewerbliche Zinskosten p.a.<br><small>Hinzurechnung</small></div>
+        <input class="money-field" type="text" name="ga_gew_zinsen" placeholder="0,00 €"/>
+        <input type="text" name="gb_gew_zinsen" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Abschreibungen p.a.<br><small>Hinzurechnung</small></div>
+        <input class="money-field" type="text" name="ga_abschr" placeholder="0,00 €"/>
+        <input type="text" name="gb_abschr" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Bemerkungen<br><small>z.B. Verweis Jahresabschluss, Stichtag</small></div>
+        <textarea name="ga_gew_bemerk" placeholder="Bemerkungen Antragsteller"></textarea>
+        <textarea name="gb_gew_bemerk" class="mitant-col" placeholder="Bemerkungen Mitantragsteller"></textarea>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Einkommensschwankungen<br><small>letzte 5 Jahre (Gewerbe)</small></div>
+        <div><div class="toggle-wrap"><button type="button" class="tog-btn" onclick="setTog('ga_gew_schwank','Ja',this)">Ja</button><button type="button" class="tog-btn" onclick="setTog('ga_gew_schwank','Nein',this)">Nein</button></div><input type="hidden" name="ga_gew_schwank" id="ga_gew_schwank"/></div>
+        <div class="mitant-col"><div class="toggle-wrap"><button type="button" class="tog-btn" onclick="setTog('gb_gew_schwank','Ja',this)">Ja</button><button type="button" class="tog-btn" onclick="setTog('gb_gew_schwank','Nein',this)">Nein</button></div><input type="hidden" name="gb_gew_schwank" id="gb_gew_schwank"/></div>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Erläuterung</div>
+        <input type="text" name="ga_gew_schwank_text" placeholder="Grund und Höhe"/>
+        <input type="text" name="gb_gew_schwank_text" class="mitant-col" placeholder="Grund und Höhe"/>
+      </div>
+
+      <div class="sub-h" style="margin-top:14px">Weitere Einkunftsarten p.a.</div>
+      <div class="gew-col-grid"><div class="col-label">Kapitalvermögen / Beteiligungen p.a.<br><small>Zinsen, Dividenden</small></div>
+        <input class="money-field" type="text" name="ga_kapital_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_kapital_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid" style="background:#fdf8ef"><div class="col-label">Vermietung &amp; Verpachtung p.a.<br><small style="color:#C8A832">↻ auto aus Immobilien (Kaltmiete × 12)</small></div>
+        <input type="text" name="ga_vvp_pa" placeholder="0,00 €" class="sum-field money-field" readonly/>
+        <input type="text" name="gb_vvp_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Land- &amp; Forstwirtschaft p.a.</div>
+        <input class="money-field" type="text" name="ga_lfw_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_lfw_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Sonstige Einkünfte p.a.<br><small>Kindergeld, Unterhalt, Renten</small></div>
+        <input class="money-field" type="text" name="ga_sonst_ein_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_sonst_ein_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+
+      <div class="sub-h" style="margin-top:14px">Zukünftige Einnahmen / Renten</div>
+      <div class="gew-col-grid"><div class="col-label">Voraussichtlicher Rentenbeginn</div>
+        <input type="text" name="ga_rentenbeginn" placeholder="MM/JJJJ"/>
+        <input type="text" name="gb_rentenbeginn" class="mitant-col" placeholder="MM/JJJJ"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Voraussichtliche Rentenhöhe p.a.</div>
+        <input class="money-field" type="text" name="ga_rente_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_rente_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Private Ausgaben (jährlich in €)</div>
+      <div class="gew-dual-header"><div></div><div class="gew-h">Antragsteller</div><div class="gew-h mitant-col">Mitantragsteller</div></div>
+      <div class="gew-col-grid"><div class="col-label">Lebenshaltungskosten p.a.<br><small>Nahrung, Bekleidung, Gesundheit, Kommunikation</small></div>
+        <input class="money-field" type="text" name="ga_lhk_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_lhk_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Miete (Kaltmiete) p.a.</div>
+        <input class="money-field" type="text" name="ga_miete_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_miete_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Wohnfläche m²</div>
+        <input type="number" name="ga_wohnflaeche" placeholder="m²" min="0"/>
+        <input type="number" name="gb_wohnflaeche" class="mitant-col" placeholder="m²" min="0"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Wohnnebenkosten p.a.<br><small>auch bei Wohneigentum</small></div>
+        <input class="money-field" type="text" name="ga_nebenk_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_nebenk_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">PKW-Kosten p.a.<br><small>Benzin, Steuern, Versicherung (ohne Firmenwagen)</small></div>
+        <input class="money-field" type="text" name="ga_pkw_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_pkw_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="sub-h">Vorsorge p.a.</div>
+      <div class="gew-col-grid"><div class="col-label">Private Krankenversicherung</div>
+        <input class="money-field" type="text" name="ga_pkv_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_pkv_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Altersvorsorge</div>
+        <input class="money-field" type="text" name="ga_altersv_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_altersv_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Gesetzliche SV-Abzüge</div>
+        <input class="money-field" type="text" name="ga_sv_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_sv_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="sub-h">Versicherungen p.a.</div>
+      <div class="gew-col-grid"><div class="col-label">Lebens- / Rentenversicherung</div>
+        <input class="money-field" type="text" name="ga_lv_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_lv_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Unfallversicherung</div>
+        <input class="money-field" type="text" name="ga_unfall_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_unfall_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Hausrat- / Haftpflichtversicherung</div>
+        <input class="money-field" type="text" name="ga_haftpfl_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_haftpfl_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="sub-h">Sonstige Ausgaben p.a.</div>
+      <div class="gew-col-grid"><div class="col-label">Bausparbeiträge</div>
+        <input class="money-field" type="text" name="ga_bauspar_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_bauspar_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Steuern / Abgaben p.a.<br><small>geschätzte Steuervorauszahlungen</small></div>
+        <input class="money-field" type="text" name="ga_steuern_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_steuern_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid"><div class="col-label">Sonstige laufende Verpflichtungen<br><small>Unterhalt, Freizeit, Bildung usw.</small></div>
+        <input class="money-field" type="text" name="ga_sonst_aus_pa" placeholder="0,00 €"/>
+        <input type="text" name="gb_sonst_aus_pa" class="mitant-col money-field" placeholder="0,00 €"/>
+      </div>
+      <div class="gew-col-grid" style="background:#fdf8ef"><div class="col-label">Kreditraten p.a.<br><small style="color:#C8A832">↻ auto aus Verbindlichkeiten (mtl. × 12)</small></div>
+        <input type="text" name="ga_kredit_sum" id="ga_kredit_sum" placeholder="0,00 €" class="sum-field money-field" readonly/>
+        <span class="mitant-col"></span>
+      </div>
+    </div>
+    </div><!-- /gewerbe-block -->
+  </div><!-- /immo-finance-block -->
+
+  <!-- Privatkredit: Einnahmen / Ausgaben / Bestehende Kredite / Kreditwunsch -->
+  <div class="privatkredit-block">
+
+    <div class="section-card">
+      <div class="section-header">Einkommen aus Haupttätigkeit (monatlich)</div>
+      <div class="pk-header-row"><div></div><div>Antragsteller</div><div>Mitantragsteller</div></div>
+      <div class="pk-row pk-row-full"><div class="col-label">Nettoeinkommen mtl. in €</div><input class="money-field" type="text" name="pk_a_netto" placeholder="0,00 €" /><input class="money-field" type="text" name="pk_b_netto" placeholder="0,00 €" /></div>
+      <div class="pk-row pk-row-full">
+        <div class="col-label">Einkommen konstant (letzte 3 Monate)?</div>
+        <div class="pk-radio-group"><label><input type="radio" name="pk_a_konstant" value="ja" checked /> Ja</label><label><input type="radio" name="pk_a_konstant" value="nein" /> Nein</label></div>
+        <div class="pk-radio-group"><label><input type="radio" name="pk_b_konstant" value="ja" checked /> Ja</label><label><input type="radio" name="pk_b_konstant" value="nein" /> Nein</label></div>
+      </div>
+      <div class="pk-row pk-row-full"><div class="col-label">Nebeneinkommen mtl. in €</div><input class="money-field" type="text" name="pk_a_neben" placeholder="0,00 €" /><input class="money-field" type="text" name="pk_b_neben" placeholder="0,00 €" /></div>
+      <div class="pk-row">
+        <div class="col-label">Kindergeldberechtigte Kinder</div>
+        <select name="pk_kindergeld"><option value="0">0 Kinder: 0 €</option><option value="259">1 Kind: 259 €</option><option value="518">2 Kinder: 518 €</option><option value="777">3 Kinder: 777 €</option><option value="1036">4+ Kinder: 1.036 €</option></select>
+      </div>
+      <div class="pk-row"><div class="col-label">Weitere Einkommen mtl. in €</div><input class="money-field" type="text" name="pk_weitere_ein_betrag" placeholder="0,00 €" /></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Ausgaben (monatlich)</div>
+      <div class="pk-row"><div class="col-label">Warmmiete in €</div><input class="money-field" type="text" name="pk_warmmiete" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Bausparen in €</div><input class="money-field" type="text" name="pk_bausparen" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Lebensversicherung in €</div><input class="money-field" type="text" name="pk_lebensvers" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Private Krankenversicherung in €</div><input class="money-field" type="text" name="pk_pkv" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Ehegattenunterhalt in €</div><input class="money-field" type="text" name="pk_eheunterhalt" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Kindesunterhalt in €</div><input class="money-field" type="text" name="pk_kindesunterhalt" placeholder="0,00 €" /></div>
+      <div class="pk-row"><div class="col-label">Besitzen Sie einen PKW?</div><div class="pk-radio-group"><label><input type="radio" name="pk_pkw" value="nein" checked /> Nein</label><label><input type="radio" name="pk_pkw" value="ja" /> Ja</label></div></div>
+      <div class="pk-row"><div class="col-label">Besitzen Sie ein Motorrad?</div><div class="pk-radio-group"><label><input type="radio" name="pk_motorrad" value="nein" checked /> Nein</label><label><input type="radio" name="pk_motorrad" value="ja" /> Ja</label></div></div>
+      <div class="pk-row"><div class="col-label">EC- oder Kreditkarten?</div><select name="pk_karten"><option value="">– bitte wählen –</option><option>EC-Karte(n)</option><option>Kreditkarte(n)</option><option>EC- und Kreditkarte(n)</option><option>Keine</option></select></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Bestehende Kredite</div>
+      <div class="immo-jn-wrap">
+        <div class="immo-jn-label">Bestehende Kredite vorhanden?</div>
+        <div class="od-toggle" style="max-width:160px">
+          <div class="od-btn" id="pk-kredit-ja-btn" onclick="selectKreditJaNein(true)">Ja</div>
+          <div class="od-btn" id="pk-kredit-nein-btn" onclick="selectKreditJaNein(false)">Nein</div>
+        </div>
+      </div>
+      <div class="immo-count-wrap" id="pk-kredit-count-wrap">
+        <div class="immo-count-label">Wie viele Kredite?</div>
+        <div class="immo-count-btns">
+          <button class="immo-count-btn" onclick="setKreditCount(1)">1</button>
+          <button class="immo-count-btn" onclick="setKreditCount(2)">2</button>
+          <button class="immo-count-btn" onclick="setKreditCount(3)">3</button>
+          <button class="immo-count-btn" onclick="setKreditCount(4)">4</button>
+        </div>
+      </div>
+      <p class="section-note" style="padding:8px 20px 12px;color:#c00;font-style:normal;font-size:12px;">Wichtig: Hier bitte keine Baufinanzierungsraten eingeben.</p>
+      <div id="pk-kredite"></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Kreditwunsch</div>
+      <div class="pk-row"><div class="col-label">Gewünschter Kreditbetrag in €</div><input type="text" name="pk_kreditbetrag" placeholder="z. B. 15.000,00 €" style="font-size:16px;font-weight:700;border-color:var(--gold);" /></div>
+      <div class="pk-row">
+        <div class="col-label">Kreditlaufzeit</div>
+        <select name="pk_laufzeit"><option value="">– bitte wählen –</option><option value="12">12 Monate</option><option value="24">24 Monate</option><option value="36">36 Monate</option><option value="48">48 Monate</option><option value="60">60 Monate</option><option value="72">72 Monate</option><option value="84">84 Monate</option><option value="96">96 Monate</option><option value="108">108 Monate</option><option value="120">120 Monate</option></select>
+      </div>
+      <div class="pk-row"><div class="col-label">Gewünschter Auszahlungstermin</div><div class="pk-radio-group"><label><input type="radio" name="pk_auszahlung" value="schnellstmöglich" checked /> schnellstmöglich</label><label><input type="radio" name="pk_auszahlung" value="datum" /> Datum auswählen</label></div></div>
+      <div class="pk-row"><div class="col-label">Auszahlungsdatum</div><input type="text" name="pk_auszahlung_datum" placeholder="TT.MM.JJJJ" /></div>
+      <div class="pk-row"><div class="col-label">Einzug der Rate zum</div><div class="pk-radio-group"><label><input type="radio" name="pk_einzug" value="1" checked /> 1. des Monats</label><label><input type="radio" name="pk_einzug" value="15" /> 15. des Monats</label></div></div>
+      <div class="pk-row"><div class="col-label">Bemerkung zum Kreditantrag</div><textarea name="pk_bemerkung" rows="3" placeholder="Optionale Anmerkungen…" style="resize:vertical;"></textarea></div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">Konto für Auszahlung &amp; Weitere Informationen</div>
+      <div class="pk-row"><div class="col-label">Bankverbindung</div><div class="pk-radio-group"><label><input type="radio" name="pk_banktyp" value="iban" checked onclick="togglePKBank()" /> IBAN</label><label><input type="radio" name="pk_banktyp" value="kontonr" onclick="togglePKBank()" /> Konto-Nr. &amp; BLZ</label></div></div>
+      <div id="pk-bank-iban"><div class="pk-row"><div class="col-label">IBAN</div><input type="text" name="pk_iban" placeholder="DE00 0000 0000 0000 0000 00" /></div></div>
+      <div id="pk-bank-kontonr" style="display:none;">
+        <div class="pk-row"><div class="col-label">Kontonummer</div><input type="text" name="pk_kontonr" /></div>
+        <div class="pk-row"><div class="col-label">Bankleitzahl (BLZ)</div><input type="text" name="pk_blz" /></div>
+      </div>
+      <div class="pk-row"><div class="col-label">Inkassozahlungen vorhanden?</div><div class="pk-radio-group"><label><input type="radio" name="pk_inkasso" value="nein" checked /> Nein</label><label><input type="radio" name="pk_inkasso" value="ja" /> Ja</label></div></div>
+      <div class="pk-row"><div class="col-label">Rücklastschriften vorhanden?</div><div class="pk-radio-group"><label><input type="radio" name="pk_ruecklast" value="nein" checked /> Nein</label><label><input type="radio" name="pk_ruecklast" value="ja" /> Ja</label></div></div>
+    </div>
+
+  </div><!-- /privatkredit-block -->
+
+    <!-- Dokumente hochladen -->
+    <div class="section-card">
+      <div class="section-header">Dokumente</div>
+      <div style="padding:16px 24px;">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:13px;color:#555;font-weight:600;min-width:240px;">Möchten Sie Dokumente beifügen?</div>
+          <div class="od-toggle" style="max-width:160px">
+            <div class="od-btn" id="dok-ja-btn" onclick="selectDokJaNein(true)">Ja</div>
+            <div class="od-btn" id="dok-nein-btn" onclick="selectDokJaNein(false)">Nein</div>
+          </div>
+        </div>
+        <div id="dok-upload-wrap" style="display:none;margin-top:16px;">
+          <label id="dok-dropzone"
+            style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+                   border:2px dashed #c8b87a;border-radius:6px;padding:32px 24px;cursor:pointer;
+                   background:#fdfbf4;transition:background .2s;"
+            onmouseover="this.style.background='#faf6e6'"
+            onmouseout="this.style.background='#fdfbf4'">
+            <input type="file" id="dok-input" multiple
+              accept="image/jpeg,image/png,image/gif,image/bmp,image/webp,.jpg,.jpeg,.png,.gif,.bmp,.webp"
+              style="display:none;" onchange="addDokumente(this)" />
+            <div style="font-size:32px;color:#c8b87a;">🖼️</div>
+            <div style="font-size:14px;font-weight:700;color:#555;">Bilder auswählen oder hier ablegen</div>
+            <div style="font-size:11px;color:#aaa;">Nur Bilder (JPG, PNG, GIF, BMP, WebP) – diese werden beim Drucken direkt angezeigt</div>
+            <span style="display:inline-block;margin-top:4px;padding:7px 20px;background:transparent;border:1px solid var(--gold-mid);color:var(--gold-mid);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;">
+              Bilder auswählen
+            </span>
+          </label>
+          <div id="dok-liste" style="margin-top:14px;"></div>
+          <div class="dok-print-box" id="dok-print-list" style="display:none;margin-top:8px;border:1px solid #e2ddd0;border-radius:4px;padding:12px 16px;font-size:12px;color:#555;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card ds-card">
+      <div class="section-header">Datenschutz &amp; Einwilligung</div>
+      <div class="ds-check-wrap">
+        <input type="checkbox" id="cb-datenschutz" onchange="checkDatenschutz()">
+        <label for="cb-datenschutz" class="ds-text">
+          Ich habe die <button class="ds-link" onclick="document.getElementById('ds-modal').showModal();return false;">Datenschutzerklärung</button> gemäß DSGVO von Anja Woßlick gelesen und verstanden.
+          Ich bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Finanzierungsberatung
+          erhoben, gespeichert und verarbeitet werden. Die Daten werden ausschließlich für die Bearbeitung
+          meines Finanzierungsanliegens genutzt und nicht ohne meine ausdrückliche Einwilligung an Dritte weitergegeben.
+          <strong style="display:block;margin-top:8px;color:#c00">* Pflichtfeld – erforderlich zum Fortfahren</strong>
+        </label>
+      </div>
+      <div class="ds-print-box">
+        ☑ Datenschutzerklärung gelesen und akzeptiert &nbsp;|&nbsp;
+        Unterschrift: _______________________________ &nbsp; Datum: _______________
+      </div>
+    </div>
+
+    <!-- Abschluss-Panel -->
+    <div class="action-panel">
+      <div class="action-panel-header">
+        <h2>Selbstauskunft abschließen</h2>
+        <p>Formular drucken oder direkt an Anja Woßlick übermitteln</p>
+      </div>
+      <div class="action-panel-body">
+        <div class="action-info">
+          <strong>Schritt 1:</strong> Formular als PDF speichern (Drucken-Button).<br>
+          <strong>Schritt 2:</strong> E-Mail-Button klicken → Ihr E-Mail-Programm öffnet sich mit vorausgefülltem Betreff. Das gespeicherte PDF bitte als Anhang hinzufügen und absenden.
+        </div>
+        <div class="action-buttons">
+          <button class="action-btn action-btn-print" onclick="window.print()">
+            <span class="action-btn-icon">🖨</span>
+            <span>Drucken / Als PDF speichern</span>
+          </button>
+          <button class="action-btn action-btn-email" onclick="sendEmail()">
+            <span class="action-btn-icon">✉</span>
+            <span>Per E-Mail an Anja Woßlick</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goStep(4)">← Zurück</button>
+    </div>
+  </div>
+
+
+
+</main>
+
+<script>
+  let finanzierungstyp    = null;
+  let darlehensnehmerzahl = null;
+  let kundentyp           = null;
+
+  function checkWeiterButton() {
+    const ok = finanzierungstyp && darlehensnehmerzahl && kundentyp;
+    document.getElementById('btn-step1-weiter').disabled = !ok;
+  }
+
+  function selectVorhaben(typ) {
+    finanzierungstyp = typ;
+    document.getElementById('card-eigenheim').classList.toggle('selected', typ === 'eigenheim');
+    document.getElementById('card-kapital').classList.toggle('selected', typ === 'kapitalanlage');
+    document.getElementById('card-privatkredit').classList.toggle('selected', typ === 'privatkredit');
+
+    if (typ === 'privatkredit') {
+      document.body.classList.add('privatkredit');
+      // Bei Privat-/KFZ-Kredit: gewerbe-Modus nie aktiv (gleiches Formular egal ob Privat oder Gewerblich gewählt)
+      document.body.classList.remove('gewerbe');
+      // Kundentyp-Auswahl NICHT erzwingen – Nutzer wählt selbst
+    } else {
+      document.body.classList.remove('privatkredit');
+      // Wenn Gewerblich bereits gewählt war, gewerbe-Modus wieder aktivieren
+      if (kundentyp === 'gewerblich') {
+        document.body.classList.add('gewerbe');
+      }
+    }
+
+    checkWeiterButton();
+  }
+
+  function selectDarlehensnehmer(n) {
+    darlehensnehmerzahl = n;
+    document.getElementById('card-dn1').classList.toggle('selected', n === 1);
+    document.getElementById('card-dn2').classList.toggle('selected', n === 2);
+    document.body.classList.toggle('single', n === 1);
+    checkWeiterButton();
+  }
+
+  function selectKundentyp(typ) {
+    kundentyp = typ;
+    document.getElementById('card-privat').classList.toggle('selected', typ === 'privat');
+    document.getElementById('card-gewerbe').classList.toggle('selected', typ === 'gewerblich');
+    document.getElementById('gewerbe-notice').style.display = 'none';
+    // Bei Privat-/KFZ-Kredit + Gewerblich: kein gewerbe-Modus → gleiche Selbstauskunft wie Privat
+    if (typ === 'gewerblich' && finanzierungstyp === 'privatkredit') {
+      document.body.classList.remove('gewerbe');
+    } else {
+      document.body.classList.toggle('gewerbe', typ === 'gewerblich');
+    }
+    checkWeiterButton();
+  }
+
+  function setOD(person, val, btn) {
+    document.getElementById(person + '_oefd').value = val;
+    const wrap = document.getElementById('od-' + person);
+    wrap.querySelectorAll('.od-btn').forEach(b => b.classList.remove('active-yes','active-no'));
+    btn.classList.add(val === 'ja' ? 'active-yes' : 'active-no');
+  }
+
+  // ── Navigation ──
+  let currentStep = 1;
+  function goStep(n) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.querySelectorAll('.step-tab')[currentStep - 1].classList.remove('active');
+    if (currentStep < n) {
+      document.querySelectorAll('.step-tab')[currentStep - 1].classList.add('done');
+      document.querySelectorAll('.step-tab')[currentStep - 1].querySelector('.step-num').textContent = '✓';
+    }
+    currentStep = n;
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.querySelectorAll('.step-tab')[currentStep - 1].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Immobilien Ja/Nein + Anzahl ──
+  function selectImmoJaNein(ja) {
+    var jaBtn = document.getElementById('immo-ja-btn');
+    var neinBtn = document.getElementById('immo-nein-btn');
+    var cw = document.getElementById('immo-count-wrap');
+    if (!jaBtn || !neinBtn || !cw) return;
+    jaBtn.className  = 'od-btn' + (ja  ? ' active-yes' : '');
+    neinBtn.className = 'od-btn' + (!ja ? ' active-no'  : '');
+    cw.style.display = ja ? 'flex' : 'none';
+    if (!ja) setImmoCount(0);
+  }
+  function setImmoCount(n) {
+    for (var i = 1; i <= 6; i++) {
+      var slot = document.getElementById('immo-slot-' + i);
+      if (slot) slot.classList.toggle('immo-hidden', i > n);
+    }
+    document.querySelectorAll('.immo-count-btn').forEach(function(btn, idx) {
+      btn.classList.toggle('active', idx + 1 === n);
+    });
+  }
+
+  // ── Privatkredit: Bestehende Kredite ──
+  function selectKreditJaNein(ja) {
+    var jaBtn  = document.getElementById('pk-kredit-ja-btn');
+    var neinBtn = document.getElementById('pk-kredit-nein-btn');
+    var cw = document.getElementById('pk-kredit-count-wrap');
+    if (!jaBtn || !neinBtn || !cw) return;
+    jaBtn.className  = 'od-btn' + (ja  ? ' active-yes' : '');
+    neinBtn.className = 'od-btn' + (!ja ? ' active-no'  : '');
+    cw.style.display = ja ? 'flex' : 'none';
+    if (!ja) setKreditCount(0);
+  }
+  function setKreditCount(n) {
+    for (var i = 1; i <= 4; i++) {
+      var slot = document.getElementById('pk-kredit-slot-' + i);
+      if (slot) slot.classList.toggle('kredit-hidden', i > n);
+    }
+    document.querySelectorAll('#pk-kredit-count-wrap .immo-count-btn').forEach(function(btn, idx) {
+      btn.classList.toggle('active', idx + 1 === n);
+    });
+  }
+  (function() {
+    var container = document.getElementById('pk-kredite');
+    if (!container) return;
+    var html = '';
+    for (var i = 1; i <= 4; i++) {
+      html += `<div class="kredit-panel kredit-hidden" id="pk-kredit-slot-${i}">
+        <div class="kredit-panel-head">${i}. Kredit</div>
+        <div class="pk-row"><div class="col-label">Kreditart</div><select name="pk_k${i}_art"><option value="">–</option><option>Konsumentenkredit</option><option>Rahmenkredit / Dispokredit</option><option>Autokredit / Leasing</option><option>Ratenkredit</option><option>Sonstiges</option></select></div>
+        <div class="pk-row"><div class="col-label">Kreditbetrag / Verfügungsrahmen in €</div><input class="money-field" type="text" name="pk_k${i}_betrag" placeholder="0,00 €" /></div>
+        <div class="pk-row"><div class="col-label">Monatliche Rate in €</div><input class="money-field" type="text" name="pk_k${i}_rate" placeholder="0,00 €" /></div>
+        <div class="pk-row"><div class="col-label">Kreditbeginn</div><input type="text" name="pk_k${i}_beginn" placeholder="MM/JJJJ" /></div>
+        <div class="pk-row"><div class="col-label">Restlaufzeit bis</div><input type="text" name="pk_k${i}_restlz" placeholder="MM/JJJJ" /></div>
+        <div class="pk-row"><div class="col-label">Kredit umschulden?</div><div class="pk-radio-group"><label><input type="radio" name="pk_k${i}_umschulden" value="nein" checked /> Nein</label><label><input type="radio" name="pk_k${i}_umschulden" value="ja" /> Ja</label></div></div>
+        <div class="pk-row"><div class="col-label">Geschätzte Restschuld in €</div><input class="money-field" type="text" name="pk_k${i}_restschuld" placeholder="0,00 €" /></div>
+        <div class="pk-row"><div class="col-label">IBAN des Kreditkontos</div><input type="text" name="pk_k${i}_iban" placeholder="DE00 0000 0000 0000 0000 00" /></div>
+      </div>`;
+    }
+    container.innerHTML = html;
+  })();
+  function togglePKBank() {
+    var typ = document.querySelector('input[name="pk_banktyp"]:checked');
+    if (!typ) return;
+    document.getElementById('pk-bank-iban').style.display   = typ.value === 'iban'    ? '' : 'none';
+    document.getElementById('pk-bank-kontonr').style.display = typ.value === 'kontonr' ? '' : 'none';
+  }
+
+  function sendEmail() {
+    var nameEl = document.querySelector('[name="a_name"]');
+    var kundenName = (nameEl && nameEl.value.trim()) ? nameEl.value.trim() : 'Kunde';
+
+    var anredeEl = document.querySelector('[name="a_anrede"]');
+    var anrede = (anredeEl && anredeEl.value) ? anredeEl.value : '';
+
+    var vorhaben = '';
+    var vorhabenEl = document.querySelector('.vorhaben-card.selected .vorhaben-title');
+    if (vorhabenEl) vorhaben = vorhabenEl.textContent.trim();
+
+    var subject = 'Selbstauskunft – ' + kundenName;
+
+    var body =
+      'Sehr geehrte Frau Woßlick,\n\n' +
+      'anbei erhalten Sie die ausgefüllte Selbstauskunft' +
+      (vorhaben ? ' (' + vorhaben + ')' : '') +
+      ' von ' + (anrede ? anrede + ' ' : '') + kundenName + '.\n\n' +
+      'Bitte hängen Sie das gespeicherte PDF als Anhang an und senden Sie die E-Mail ab.\n\n' +
+      'Mit freundlichen Grüßen';
+
+    var mailto = 'mailto:awosslick@elbfinanz-dresden.de' +
+                 '?subject=' + encodeURIComponent(subject) +
+                 '&body='    + encodeURIComponent(body);
+
+    // Druckdialog zuerst öffnen (synchron in den meisten Browsern)
+    window.print();
+
+    // Danach E-Mail-Programm öffnen
+    setTimeout(function() {
+      window.location.href = mailto;
+    }, 500);
+  }
+
+  // ── Dokumente hochladen ──
+  var dokumente = []; // { name, size, icon, dataUrl (nur Bilder) }
+
+  function selectDokJaNein(ja) {
+    document.getElementById('dok-ja-btn').className  = 'od-btn' + (ja  ? ' active-yes' : '');
+    document.getElementById('dok-nein-btn').className = 'od-btn' + (!ja ? ' active-no'  : '');
+    document.getElementById('dok-upload-wrap').style.display = ja ? 'block' : 'none';
+  }
+
+  function dokIsImage(name) {
+    return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(name);
+  }
+
+  function dokSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function addDokumente(input) {
+    var files = Array.from(input.files || []);
+    var abgelehnt = [];
+    files.forEach(function(f) {
+      if (!dokIsImage(f.name)) {
+        abgelehnt.push(f.name);
+        return;
+      }
+      if (dokumente.find(function(d) { return d.name === f.name && d.size === f.size; })) return;
+      var entry = { name: f.name, size: f.size, dataUrl: null };
+      dokumente.push(entry);
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        entry.dataUrl = e.target.result;
+        renderDokListe();
+      };
+      reader.readAsDataURL(f);
+    });
+    if (input.value !== undefined) input.value = '';
+    if (abgelehnt.length) {
+      alert('Nur Bilder (JPG, PNG, GIF, BMP, WebP) können beigefügt werden.\n\nNicht akzeptiert:\n' + abgelehnt.join('\n'));
+    }
+    renderDokListe();
+  }
+
+  function removeDok(idx) {
+    dokumente.splice(idx, 1);
+    renderDokListe();
+  }
+
+  function renderDokListe() {
+    var liste     = document.getElementById('dok-liste');
+    var printList = document.getElementById('dok-print-list');
+    if (!dokumente.length) {
+      liste.innerHTML = '';
+      printList.style.display = 'none';
+      return;
+    }
+
+    // Normale Ansicht
+    var html = '';
+    dokumente.forEach(function(d, i) {
+      html += '<div class="dok-item">';
+      if (d.dataUrl) {
+        html += '<img src="' + d.dataUrl + '" style="width:48px;height:36px;object-fit:cover;border-radius:3px;border:1px solid #e0d8c0;flex-shrink:0;" />';
+      } else {
+        html += '<span class="dok-item-icon" style="font-size:22px;">🖼️</span>';
+      }
+      html += '<span class="dok-item-name">' + d.name + '</span>'
+            + '<span class="dok-item-size">' + dokSize(d.size) + '</span>'
+            + '<button class="dok-item-remove" onclick="removeDok(' + i + ')" title="Entfernen">✕</button>'
+            + '</div>';
+    });
+    liste.innerHTML = html;
+
+    // Print-Version: alle Einträge sind Bilder → direkt einbetten
+    printList.style.display = 'block';
+    var pHtml = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9a7c2f;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e8e0c8;">Beigefügte Bilder</div>';
+    dokumente.forEach(function(d, i) {
+      pHtml += '<div style="margin-bottom:18px;page-break-inside:avoid;">';
+      pHtml += '<div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px;">' + (i+1) + '. ' + d.name + ' (' + dokSize(d.size) + ')</div>';
+      if (d.dataUrl) {
+        pHtml += '<img src="' + d.dataUrl + '" style="max-width:100%;max-height:280px;object-fit:contain;border:1px solid #e2ddd0;border-radius:3px;display:block;" />';
+      } else {
+        pHtml += '<div style="font-size:11px;color:#aaa;font-style:italic;">Bild wird noch geladen …</div>';
+      }
+      pHtml += '</div>';
+    });
+    printList.innerHTML = pHtml;
+  }
+
+  // Drag & Drop
+  document.addEventListener('DOMContentLoaded', function() {
+    var zone = document.getElementById('dok-dropzone');
+    if (!zone) return;
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.style.background = '#faf0cc'; });
+    zone.addEventListener('dragleave', function() { zone.style.background = '#fdfbf4'; });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.style.background = '#fdfbf4';
+      addDokumente({ files: e.dataTransfer.files });
+    });
+    zone.addEventListener('click', function() {
+      document.getElementById('dok-input').click();
+    });
+  });
+
+  // ── Vermietete Immobilien (PK) ──
+  (function() {
+    var panels = document.getElementById('pk-vimmo-panels');
+    if (!panels) return;
+    var html = '';
+    for (var i = 1; i <= 6; i++) {
+      html += '<div id="pk-vi-slot-' + i + '" class="kredit-panel kredit-hidden">'
+            + '<div class="kredit-panel-head">Immobilie ' + i + '</div>'
+            + '<div style="padding:4px 0;">'
+            + '<div class="pk-row"><div class="col-label" style="font-weight:700;">Abbezahlt?</div>'
+            + '<div class="immo-jn-wrap">'
+            + '<div class="od-btn" id="pk-vi-abbez-ja-' + i + '" onclick="selectViAbbez(' + i + ',true)">Ja</div>'
+            + '<div class="od-btn" id="pk-vi-abbez-nein-' + i + '" onclick="selectViAbbez(' + i + ',false)">Nein</div>'
+            + '</div></div>'
+            + '<div id="pk-vi-felder-' + i + '" style="display:none;">'
+            + '<div class="pk-row"><div class="col-label">Aktuelle Restschuld</div><input class="money-field" type="text" name="pk_vi' + i + '_restschuld" placeholder="0,00 €" /></div>'
+            + '<div class="pk-row"><div class="col-label">Laufzeit bis</div><input type="text" name="pk_vi' + i + '_laufzeit" placeholder="MM/JJJJ" /></div>'
+            + '<div class="pk-row"><div class="col-label">Mtl. Rate</div><input class="money-field" type="text" name="pk_vi' + i + '_rate" placeholder="0,00 €" /></div>'
+            + '<div class="pk-row"><div class="col-label">Darlehensgeber</div><input type="text" name="pk_vi' + i + '_darlehensgeber" /></div>'
+            + '<div class="pk-row"><div class="col-label">Zinsbindung bis</div><input type="text" name="pk_vi' + i + '_zinsbindung" placeholder="MM/JJJJ" /></div>'
+            + '<div class="pk-row"><div class="col-label">Einnahmen Kaltmiete</div><input class="money-field" type="text" name="pk_vi' + i + '_kaltmiete" placeholder="0,00 €" /></div>'
+            + '<div class="pk-row"><div class="col-label">Nebenkosten</div><input class="money-field" type="text" name="pk_vi' + i + '_nebenkosten" placeholder="0,00 €" /></div>'
+            + '<div class="pk-row"><div class="col-label">Warmmiete</div><input class="money-field" type="text" name="pk_vi' + i + '_warmmiete" placeholder="0,00 €" /></div>'
+            + '</div>'
+            + '</div></div>';
+    }
+    panels.innerHTML = html;
+  })();
+
+  function selectVimmoJaNein(ja) {
+    document.getElementById('pk-vimmo-ja-btn').className  = 'od-btn' + (ja  ? ' active-yes' : '');
+    document.getElementById('pk-vimmo-nein-btn').className = 'od-btn' + (!ja ? ' active-no'  : '');
+    document.getElementById('pk-vimmo-wrap').style.display = ja ? '' : 'none';
+    if (!ja) { setVimmoCount(0); }
+  }
+  function setVimmoCount(n) {
+    for (var i = 1; i <= 6; i++) {
+      var btn  = document.getElementById('pk-vimmo-cnt-' + i);
+      var slot = document.getElementById('pk-vi-slot-' + i);
+      if (btn)  btn.className  = 'immo-count-btn' + (i === n ? ' active' : '');
+      if (slot) slot.classList.toggle('kredit-hidden', i > n);
+    }
+  }
+  function selectViAbbez(idx, abbez) {
+    document.getElementById('pk-vi-abbez-ja-'   + idx).className = 'od-btn' + (abbez  ? ' active-yes' : '');
+    document.getElementById('pk-vi-abbez-nein-' + idx).className = 'od-btn' + (!abbez ? ' active-no'  : '');
+    document.getElementById('pk-vi-felder-'     + idx).style.display = abbez ? 'none' : '';
+  }
+
+  // ── Kindergeld automatisch ──
+  function autoKindergeld(prefix) {
+    var n  = parseInt(document.querySelector('[name="' + prefix + '_kinder"]').value) || 0;
+    var rates = [0, 259, 518, 777, 1036];
+    var kg = rates[Math.min(n, 4)];
+    var field = document.querySelector('[name="' + prefix + '_kindergeld"]');
+    if (field) field.value = kg > 0 ? String(kg) : '';
+  }
+
+
+  // ══════════════════════════════════════════════════
+  // ── Währungsformatierung ──────────────────────────
+  // ══════════════════════════════════════════════════
+  function parseMoney(raw) {
+    var s = String(raw).replace(/\s*€\s*$/,'').trim();
+    if (s === '') return NaN;
+    if (s.indexOf(',') !== -1) {
+      s = s.replace(/\./g,'').replace(',','.');
+    } else {
+      s = s.replace(/\./g,'');
+    }
+    return parseFloat(s);
+  }
+  function formatMoney(val) {
+    var n = parseMoney(val);
+    if (isNaN(n)) return '';
+    return n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+  }
+  function onMoneyFocus(el) {
+    var raw = String(el.value).replace(/\s*€\s*$/,'').replace(/\./g,'').trim();
+    el.value = raw;
+    setTimeout(function(){ el.select(); }, 0);
+  }
+  function onMoneyBlur(el) {
+    var fmt = formatMoney(el.value);
+    el.value = fmt;
+    if (typeof calcSums === 'function') calcSums();
+  }
+  document.addEventListener('focus', function(e) {
+    var el = e.target;
+    if (el.tagName === 'INPUT' && el.classList.contains('money-field') && !el.readOnly) {
+      onMoneyFocus(el);
+    }
+  }, true);
+  document.addEventListener('blur', function(e) {
+    var el = e.target;
+    if (el.tagName === 'INPUT' && el.classList.contains('money-field') && !el.readOnly) {
+      onMoneyBlur(el);
+    }
+  }, true);
+  // ══════════════════════════════════════════════════
+
+  // ── Datenschutz-Checkbox ──
+  function checkDatenschutz() {
+    var ok  = document.getElementById('cb-datenschutz');
+    var btn = document.getElementById('btn-ds-weiter');
+    if (ok && btn) btn.disabled = !ok.checked;
+  }
+
+  // ── Immobilien Accordion ──
+  (function() {
+    const immoContainer = document.getElementById('immos');
+    let immoHtml = '';
+    for (let i = 1; i <= 6; i++) {
+      immoHtml += `
+      <div class="immo-item immo-hidden" id="immo-slot-${i}">
+        <button class="immo-toggle" onclick="toggleImmo(this,${i})"><span>Immobilie ${i}</span><span class="arrow">▾</span></button>
+        <div class="immo-body" id="immo${i}">
+          <div class="immo-sub-header">Objektdaten</div>
+          <div class="immo-row">
+            <div class="col-label">Immobilientyp</div>
+            <select name="i${i}_typ">
+              <option value="">– bitte wählen –</option>
+              <option>EFH (Einfamilienhaus)</option>
+              <option>ETW (Eigentumswohnung)</option>
+              <option>MFH (Mehrfamilienhaus)</option>
+              <option>Sonstiges</option>
+            </select>
+            <span></span>
+          </div>
+          <div class="immo-row">
+            <div class="col-label">Vollst. Anschrift</div>
+            <input type="text" name="i${i}_adr" id="i${i}_adr" placeholder="Straße, PLZ Ort" style="grid-column:2/4"/>
+            <span></span>
+          </div>
+          <div class="immo-row"><div class="col-label">Kaufzeitpunkt</div><input type="text" name="i${i}_kauf" placeholder="MM/JJJJ"/><input type="text" name="i${i}_baujahr" placeholder="Baujahr (JJJJ)"/></div>
+          <div class="immo-row"><div class="col-label">Wert der Immobilie in €</div><input class="money-field" type="text" name="i${i}_wert" placeholder="0,00 €"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Mtl. Kaltmiete in €</div><input class="money-field" type="text" name="i${i}_miete" placeholder="0,00 €"/><span></span></div>
+          <div class="immo-row">
+            <div class="col-label">Wohnfläche gesamt m²</div>
+            <input type="number" name="i${i}_flaeche" id="i${i}_flaeche" placeholder="m²" min="0"/>
+            <input type="number" name="i${i}_vermietet" placeholder="davon vermietet m²" min="0"/>
+          </div>
+          <div class="immo-sub-header" style="margin-top:8px">Darlehen zur Immobilie ${i}</div>
+          <div class="immo-row"><div class="col-label">Grundschuld lt. Grundbuch</div><input type="number" name="i${i}_grundschuld" placeholder="€" min="0"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Mtl. Bankrate in €</div><input class="money-field" type="text" name="i${i}_bankrate" placeholder="0,00 €"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Aktuelle Restschuld</div><input type="number" name="i${i}_restschuld" placeholder="€" min="0"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Zinsbindung bis</div><input type="text" name="i${i}_zinsbind" placeholder="MM/JJJJ"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Laufzeitende</div><input type="text" name="i${i}_laufzeit" placeholder="MM/JJJJ"/><span></span></div>
+          <div class="immo-row"><div class="col-label">Kreditinstitut</div><input type="text" name="i${i}_kreditinst"/><span></span></div>
+        </div>
+      </div>`;
+    }
+    immoContainer.innerHTML = immoHtml;
+  })();
+
+  function toggleImmo(btn, i) {
+    btn.classList.toggle('open');
+    document.getElementById('immo' + i).classList.toggle('open');
+  }
+
+  // ── Auto-Slash für Datumseingaben (MM/JJJJ) ──
+  document.addEventListener('input', function(e) {
+    if (e.target.tagName === 'INPUT' && (e.target.placeholder || '').includes('MM/JJJJ')) {
+      let raw = e.target.value.replace(/\D/g, '');
+      if (raw.length > 2) raw = raw.slice(0,2) + '/' + raw.slice(2,6);
+      else if (raw.length === 2 && !e.target.value.endsWith('/')) raw = raw + '/';
+      if (e.target.value !== raw) e.target.value = raw;
+    }
+  });
+
+  // ── Auto-Summe: Einnahmen aus Vermietung (Kaltmiete aller Immobilien) ──
+  function updateVermietungSum() {
+    let sum = 0;
+    for (let i = 1; i <= 6; i++) {
+      const el = document.querySelector('[name="i' + i + '_miete"]');
+      if (el) sum += parseFloat(el.value) || 0;
+    }
+    const el = document.querySelector('[name="a_vermietung"]');
+    if (el) el.value = sum > 0 ? sum.toFixed(2) : '';
+  }
+
+  // ── Auto-Summe: Kreditraten aus Verbindlichkeiten + Immobilien Bankraten ──
+  function updateKreditratenSum() {
+    let sum = 0;
+    ['d1_rate','d2_rate','l_rate'].forEach(function(n) {
+      const el = document.querySelector('[name="' + n + '"]');
+      if (el) sum += parseFloat(el.value) || 0;
+    });
+    for (let i = 1; i <= 6; i++) {
+      const el = document.querySelector('[name="i' + i + '_bankrate"]');
+      if (el) sum += parseFloat(el.value) || 0;
+    }
+    const el = document.querySelector('[name="a_kredit"]');
+    if (el) el.value = sum > 0 ? sum.toFixed(2) : '';
+  }
+
+  // Event-Delegation
+  document.addEventListener('input', function(e) {
+    const n = e.target.name || '';
+    if (/^i\d+_miete$/.test(n)) { updateVermietungSum(); updateVermietungSumGew(); }
+    if (/^i\d+_bankrate$/.test(n)) updateKreditratenSum();
+    if (['d1_rate','d2_rate','l_rate'].includes(n)) updateKreditratenSum();
+    if (/^gpv\d+_rate$/.test(n)) updateKreditratenSumGew();
+  });
+
+  // ══════════════════════════════════════════════════════════
+  //  GLOBALE FORMATTER: Datum & Währung
+  // ══════════════════════════════════════════════════════════
+
+  // ── Währungsfelder: type=number → text umwandeln ─────────
+  const CURR_NAME = /_(spar|bauspar|festgeld|aktien|rueckkauf|sonst_verm|wert|miete|bankrate|grundschuld|restschuld|rate|rest|nettolohn|einkommen|pacht|neben|hausgeld|erhaltung|bewirtsch|kredit|sum|tilg|lhk|pa|beitrag|rente_pa|kfz_pa|ges_)|(^(a|b|ga|gb)_(spar|bauspar|festgeld|aktien|rueckkauf|sonst_verm)$)/;
+  const NO_CURR   = /_(anz|kinder|zimmer|flaeche|vermietet|baujahr|monate|restlz|beginn|laufzeit|zinsbindung)$/;
+
+  function isCurrField(el) {
+    const n = el.name || '';
+    return el.type === 'text' && CURR_NAME.test(n) && !NO_CURR.test(n);
+  }
+
+  function parseCurr(str) {
+    if (typeof str === 'number') return str;
+    str = String(str || '').replace(/\s*€\s*/g,'').replace(/\./g,'').replace(',','.');
+    return parseFloat(str) || 0;
+  }
+
+  function formatCurr(val) {
+    const n = parseCurr(val);
+    if (!n) return '';
+    return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  }
+
+  // Alle Geld-Inputs auf type=text umstellen
+  document.querySelectorAll('input[type="number"]').forEach(function(inp) {
+    const n = inp.name || '';
+    if (CURR_NAME.test(n) && !NO_CURR.test(n)) {
+      inp.type = 'text';
+      inp.inputMode = 'decimal';
+    }
+  });
+
+  // Blur → formatieren; Focus → Rohwert
+  document.addEventListener('blur', function(e) {
+    const el = e.target;
+    if (el.tagName !== 'INPUT' || el.readOnly) return;
+    if (isCurrField(el)) {
+      const raw = el.value.replace(/\s*€\s*$/,'').replace(/\./g,'').replace(',','.');
+      const n = parseFloat(raw);
+      el.value = (!raw || isNaN(n)) ? '' : formatCurr(n);
+    }
+  }, true);
+
+  document.addEventListener('focus', function(e) {
+    const el = e.target;
+    if (el.tagName !== 'INPUT' || el.readOnly) return;
+    if (isCurrField(el)) {
+      const n = parseCurr(el.value);
+      el.value = n ? String(n).replace('.', ',') : '';
+    }
+  }, true);
+
+  // Berechnungsfunktionen: parseFloat → parseCurr  (bereits geladen)
+  // Die bestehenden Funktionen greifen auf .value zu – passen wir den
+  // Wert vor jedem Input-Event an, damit die Summen stimmen.
+  document.addEventListener('input', function(e) {
+    const el = e.target;
+    if (el.tagName !== 'INPUT' || el.readOnly) return;
+    // Währungsfelder: nur Ziffern, Komma, Punkt zulassen
+    if (isCurrField(el)) {
+      let v = el.value.replace(/[^0-9,\.]/g,'');
+      el.value = v;
+    }
+  }, true);
+
+  // ── Datum-Autoformat TT.MM.JJJJ ──────────────────────────
+  function autoDate(inp) {
+    let v = inp.value.replace(/\D/g,'');
+    if (v.length > 8) v = v.slice(0, 8);
+    if (v.length > 4) inp.value = v.slice(0,2) + '.' + v.slice(2,4) + '.' + v.slice(4);
+    else if (v.length > 2) inp.value = v.slice(0,2) + '.' + v.slice(2);
+    else inp.value = v;
+  }
+
+  // ── Datum-Autoformat MM/JJJJ (Kaufzeitpunkt, Zinsbindung) ─
+  function autoMonthYear(inp) {
+    let v = inp.value.replace(/\D/g,'');
+    if (v.length > 6) v = v.slice(0, 6);
+    if (v.length > 2) inp.value = v.slice(0,2) + '/' + v.slice(2);
+    else inp.value = v;
+  }
+
+  document.addEventListener('input', function(e) {
+    const el = e.target;
+    if (el.tagName !== 'INPUT') return;
+    const ph = el.placeholder || '';
+    const nm = el.name || '';
+    if (ph === 'TT.MM.JJJJ' || /_gebdatum$/.test(nm)) { autoDate(el); return; }
+    if (ph === 'MM/JJJJ' || /_(kauf|zinsbind|laufzeit|wohnseit|rentenbeginn|beschseit|beschaftseit)$/.test(nm)) { autoMonthYear(el); return; }
+  }, false);
+
+</script>
+
+<!-- ═══ DATENSCHUTZ-MODAL ═══ -->
+<dialog id="ds-modal">
+  <div class="ds-modal-head">
+    <h3>Darlehensvermittlung und Anschlussbetreuung</h3>
+    <button class="ds-modal-close" onclick="document.getElementById('ds-modal').close()">✕</button>
+  </div>
+  <div class="ds-modal-body">
+    <p>Hiermit beauftrage/n ich/wir Frau Anja Woßlick mit der Vermittlung eines Darlehens zur Finanzierung sowie damit in Zusammenhang stehender Finanzdienstleistungen und Betreuung während der Auszahlung dieses Darlehens. Ich/Wir bevollmächtige/n Anja Woßlick alle hierfür erforderlichen Unterlagen (Darlehensantrag, Objekt- und Bonitätsunterlagen etc.) an einen zur Finanzierung vorgesehenen Darlehensgeber weiterzuleiten, Konditionsangebote bei dem Darlehensgeber einzuholen und sämtlichen mit der Finanzierung zusammenhängenden Schriftverkehr für mich/uns entgegenzunehmen. Hiermit bevollmächtige/n ich/wir Anja Woßlick ein Darlehensvertragsangebot des finanzierenden Darlehensgebers zur Weiterleitung an mich/uns entgegenzunehmen.</p>
+    <p>Mir/Uns ist bekannt, dass eine verbindliche Darlehenszusage nur von einem Darlehensgeber selbst gegeben werden kann und dass Darlehenszusagen von Darlehensgebern jederzeit widerrufen werden können insbesondere, wenn sich Abweichungen zu den von mir gemachten Angaben herausstellen. Ich versichere/wir versichern, dass gegen mich/uns bisher keine Zwangsmaßnahmen (z.B. Gehaltspfändung, Zwangsversteigerung, Insolvenzverfahren) eingeleitet wurden. Ich/Wir bin/sind meinen/unseren Zahlungsverpflichtungen in der Vergangenheit immer ordnungsgemäß nachgekommen. Ich handle/Wir handeln im eigenen wirtschaftlichen Interesse und nicht auf fremde Veranlassung (insbesondere nicht als Treuhänder). Ich/Wir versichere/versichern, alle vorstehenden Angaben nach bestem Wissen, vollständig und wahrheitsgemäß gemacht zu haben. Falsche Angaben können gegebenenfalls zu einer Vertragsaufhebung führen.</p>
+
+    <h4>Datenschutzrechtliche Hinweise bezüglich Auskunfteien</h4>
+    <p><strong>Datenübermittlung an die SCHUFA und Befreiung vom Bankgeheimnis:</strong> Der Darlehensgeber übermittelt im Rahmen dieses Vertragsverhältnisses erhobene personenbezogene Daten über die Beantragung, die Durchführung und Beendigung dieser Geschäftsbeziehung sowie Daten über nicht vertragsgemäßes Verhalten oder betrügerisches Verhalten an die SCHUFA Holding AG, Kormoranweg 5, 65201 Wiesbaden. Rechtsgrundlagen dieser Übermittlungen sind Artikel 6 Absatz 1 Buchstabe b und Artikel 6 Absatz 1 Buchstabe f der Datenschutz-Grundverordnung (DSGVO). Der Datenaustausch mit der SCHUFA dient auch der Erfüllung gesetzlicher Pflichten zur Durchführung von Kreditwürdigkeitsprüfungen von Kunden (§ 505a des Bürgerlichen Gesetzbuches, § 18a des Kreditwesengesetzes). Der Kunde befreit den Darlehensgeber insoweit auch vom Bankgeheimnis. Die SCHUFA verarbeitet die erhaltenen Daten und verwendet sie auch zum Zwecke der Profilbildung (Scoring), um ihren Vertragspartnern im Europäischen Wirtschaftsraum und in der Schweiz sowie ggf. weiteren Drittländern Informationen unter anderem zur Beurteilung der Kreditwürdigkeit von natürlichen Personen zu geben. Nähere Informationen zur Tätigkeit der SCHUFA können dem SCHUFA-Informationsblatt nach Art. 14 DSGVO entnommen oder online unter <a href="https://www.schufa.de/datenschutz" target="_blank">www.schufa.de/datenschutz</a> eingesehen werden.</p>
+    <p><strong>Datenübermittlung an Creditreform für Freiberufler und Selbständige:</strong> Der Darlehensgeber übermittelt der Wirtschaftsauskunftei Creditreform im Rahmen der Beantragung bonitärer Leistungen Daten (Name, Adresse, Geburtsdatum, ggf. Voranschrift sowie Anfragegrund) zum Zweck der Bonitätsprüfung. Rechtsgrundlage dieser Datenübermittlungen sind Art. 6 Abs. 1b und Art. 6 Abs. 1f der Datenschutz-Grundverordnung (DSGVO). Der Datenaustausch mit der Creditreform dient auch der Erfüllung gesetzlicher Pflichten zur Durchführung von Kreditwürdigkeitsprüfungen von Kunden. Bei der Creditreform kann jederzeit auf Anforderung eine Auskunft über die die eigene Person betreffenden gespeicherten Daten verlangt werden. Weitere Informationen zur Datenverarbeitung bei Creditreform erhalten Sie unter <a href="https://www.creditreform.de/EU-DSGVO/" target="_blank">www.creditreform.de/EU-DSGVO/</a></p>
+
+    <h4>Mitwirkungspflicht Steuer-Identifikationsnummer (Steuer-ID)</h4>
+    <p>Mir/uns ist bekannt, dass ich/wir verpflichtet bin/sind gemäß § 154 Abs. 2a der Abgabenordnung meine/unsere steuerliche Identifikation bekannt zu geben. Sofern die Steuer-ID bis zum Vertragsschluss nicht mitgeteilt wurde, teilen Sie diese dem betreffenden Kreditinstitut bitte spätestens 14 Tage nach Vertragsabschluss schriftlich mit (Mitwirkungspflicht). Kreditinstitute sind ab dem 01.01.2018 gesetzlich dazu verpflichtet, die Steuer-ID für jeden Kontoinhaber sowie jeden anderen Verfügungsberechtigten zu erheben und aufzuzeichnen. Bei Missachtung der Mitwirkungspflicht muss die Bank im Wege des maschinellen Anfrageverfahrens die Steuer-ID beim Bundeszentralamt für Steuern (BZSt) erfragen.</p>
+  </div>
+</dialog>
+</body>
+</html>
